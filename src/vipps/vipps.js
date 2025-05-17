@@ -1,4 +1,5 @@
-const BACKEND_URL = 'https://playworldapp.onrender.com';
+// vipps.js
+const BACKEND_URL = 'http://localhost:4000'; // your backend URL
 
 export async function createVippsPayment(paymentData) {
   const response = await fetch(`${BACKEND_URL}/create-payment`, {
@@ -14,5 +15,5 @@ export async function createVippsPayment(paymentData) {
     throw new Error(JSON.stringify(error));
   }
 
-  return response.json();
+  return response.json(); // Should include the redirect URL as { url: 'https://...' }
 }
