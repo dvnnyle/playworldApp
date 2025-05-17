@@ -1,9 +1,14 @@
 require('dotenv').config();
+console.log('ENV TEST:', process.env.MY_SECRET);
+
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 
-n
+const app = express();
+app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(express.json());
+
 const {
   VIPPS_CLIENT_ID,
   VIPPS_CLIENT_SECRET,
