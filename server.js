@@ -6,7 +6,24 @@ const axios = require('axios');
 const cors = require('cors');
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:3000' }));
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://playworldapp.onrender.com'
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); // allow non-browser requests like Postman
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 
 const {
@@ -85,14 +102,11 @@ app.post('/create-payment', async (req, res) => {
       },
     });
 
-    // Log full response for debugging
     console.log('Vipps payment response:', JSON.stringify(response.data, null, 2));
 
-    // Try to get redirect URL from response
     let vippsRedirectUrl = response.data.url || response.data.redirectUrl;
 
     if (!vippsRedirectUrl) {
-      // Try extracting token from various fields
       const token =
         response.data.token ||
         response.data.paymentToken ||
@@ -107,7 +121,6 @@ app.post('/create-payment', async (req, res) => {
       vippsRedirectUrl = `https://apitest.vipps.no/dwo-api-application/v1/deeplink/vippsgateway?v=2&token=${token}`;
     }
 
-    // Send redirect URL to frontend
     return res.json({ url: vippsRedirectUrl });
   } catch (error) {
     console.error('Error creating Vipps payment:', error.response?.data || error.message);
