@@ -7,6 +7,9 @@ const app = express();
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
+
+
+
 const {
   VIPPS_CLIENT_ID,
   VIPPS_CLIENT_SECRET,
@@ -16,9 +19,13 @@ const {
   VIPPS_SYSTEM_VERSION,
   VIPPS_PLUGIN_NAME,
   VIPPS_PLUGIN_VERSION,
-  VIPPS_OAUTH_URL,
-  VIPPS_PAYMENT_URL,
+  // Removed VIPPS_OAUTH_URL,
+  // Removed VIPPS_PAYMENT_URL,
 } = process.env;
+
+// Manually define URLs here (replace with correct URLs)
+const VIPPS_OAUTH_URL = 'https://apitest.vipps.no/access-management-1.0/access/oauth2/token'; // example Vipps OAuth URL
+const VIPPS_PAYMENT_URL = 'https://apitest.vipps.no/ecomm/v2/payments'; // example Vipps Payment URL
 
 // Fetch Vipps access token using OAuth
 async function getAccessToken() {
@@ -83,14 +90,11 @@ app.post('/create-payment', async (req, res) => {
       },
     });
 
-    // Log full response for debugging
     console.log('Vipps payment response:', JSON.stringify(response.data, null, 2));
 
-    // Try to get redirect URL from response
     let vippsRedirectUrl = response.data.url || response.data.redirectUrl;
 
     if (!vippsRedirectUrl) {
-      // Try extracting token from various fields
       const token =
         response.data.token ||
         response.data.paymentToken ||
@@ -105,7 +109,6 @@ app.post('/create-payment', async (req, res) => {
       vippsRedirectUrl = `https://apitest.vipps.no/dwo-api-application/v1/deeplink/vippsgateway?v=2&token=${token}`;
     }
 
-    // Send redirect URL to frontend
     return res.json({ url: vippsRedirectUrl });
   } catch (error) {
     console.error('Error creating Vipps payment:', error.response?.data || error.message);
