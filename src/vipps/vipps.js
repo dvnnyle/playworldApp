@@ -1,4 +1,3 @@
-// vipps.js
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4000';
 
 export async function createVippsPayment(paymentData) {
@@ -15,5 +14,5 @@ export async function createVippsPayment(paymentData) {
     throw new Error(JSON.stringify(error));
   }
 
-  return response.json(); // Should include the redirect URL as { url: 'https://...' }
+  return response.json();
 }
