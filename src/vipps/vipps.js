@@ -1,4 +1,4 @@
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4000';
+const BACKEND_URL = 'https://playworldapp.onrender.com';
 
 export async function createVippsPayment(paymentData) {
   const response = await fetch(`${BACKEND_URL}/create-payment`, {
