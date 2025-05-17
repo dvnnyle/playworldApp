@@ -12,7 +12,10 @@ import CreateUser from "./user/CreateUser";
 import LogIn from "./user/LogIn";
 import Profile from "./user/Profile";
 import MyCart from "./shop/MyCart";
+import PaymentReturn from "./shop/PaymentReturn";
 
+
+import ProductPage from "./ProductPage"
 import PageTransition from "./comp/PageTransition";
 
 function AnimatedRoutes() {
@@ -29,7 +32,32 @@ function AnimatedRoutes() {
             </PageTransition>
           }
         />
+
+
         <Route
+        
+          path="/ProductPage"
+          element={
+            <PageTransition>
+              <ProductPage />
+            </PageTransition>
+          }
+        />
+        <Route
+
+             path="/PaymentReturn"
+          element={
+            <PageTransition>
+              <PaymentReturn />
+            </PageTransition>
+          }
+        />
+        <Route
+
+
+
+  
+        
           path="/about"
           element={
             <PageTransition>

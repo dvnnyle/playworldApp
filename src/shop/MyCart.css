@@ -60,3 +60,38 @@
     right: 8px;
   }
 }
+
+
+.buyer-name-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 1em;
+  color: #34495e;
+  margin-top: 20px;
+}
+
+.buyer-name-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: 1.5px solid #bbb;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.buyer-name-input:focus {
+  border-color: #2c3e50;
+  outline: none;
+}
+
+.input-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.input-row > div {
+  flex: 1;
+}
