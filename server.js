@@ -3,10 +3,7 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 
-const app = express();
-app.use(cors({ origin: 'http://localhost:3000' }));
-app.use(express.json());
-
+n
 const {
   VIPPS_CLIENT_ID,
   VIPPS_CLIENT_SECRET,
