@@ -8,6 +8,9 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.9.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
     "firebase": "^11.7.3",
     "framer-motion": "^12.12.1",
     "jspdf": "^3.0.1",
@@ -19,11 +22,10 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
-"scripts": {
-  "start": "node server.js",
-  "build": "react-scripts build"
-}
-,
+  "scripts": {
+    "start": "node server.js",
+    "build": "react-scripts build"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
