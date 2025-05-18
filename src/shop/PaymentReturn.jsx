@@ -24,17 +24,20 @@ export default function PaymentReturn() {
     0
   );
 
-  return (
+return (
+  <div>
+    <div className="global-rectangle">
+      <h1 className="global-title">VÅRE PARKER</h1>
+    </div>
+
     <div className="payment-return-container">
       <h1>Takk for din bestilling!</h1>
 
-<div className="left-align">
-  <div><strong>Navn:</strong> <span>{buyerName || "N/A"}</span></div>
-<div><strong>Ordre Referanse:</strong> <span>{orderReference || "N/A"}</span></div>
-  <div><strong>Telefonnummer:</strong> <span>{phoneNumber || "N/A"}</span></div>
-</div>
-
-
+      <div className="left-align">
+        <div><strong>Navn:</strong> <span>{buyerName || "N/A"}</span></div>
+        <div><strong>Ordre Referanse:</strong> <span>{orderReference || "N/A"}</span></div>
+        <div><strong>Telefonnummer:</strong> <span>{phoneNumber || "N/A"}</span></div>
+      </div>
 
       <div className="receipt-box">
         <h2>Ordre Sammendrag:</h2>
@@ -50,5 +53,7 @@ export default function PaymentReturn() {
         </p>
       </div>
     </div>
-  );
+  </div>
+);
+
 }
