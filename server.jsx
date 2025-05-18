@@ -7,7 +7,7 @@ const cors = require('cors');
 const app = express();
 
 // Enable CORS for localhost frontend (adjust in production)
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors());
 
 // Parse JSON bodies
 app.use(express.json());

@@ -57,7 +57,7 @@ export default function MyCart() {
       phoneNumber: fullPhoneNumber,
       buyerName: buyerName.trim(),
 reference: Date.now().toString().slice(-8),
-      returnUrl: "'http://localhost:60084/PaymentReturn",
+      returnUrl: "http://localhost:3000/PaymentReturn",
       paymentDescription: `Betaling for ${cartItems.length} varer`,
     };
 
