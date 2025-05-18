@@ -1,29 +1,18 @@
-const path = require('path');
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 
 const app = express();
 
-// ✅ CORS middleware
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://your-frontend.onrender.com', // Replace with actual frontend URL on Render
-];
+// Enable CORS for localhost frontend (adjust in production)
+app.use(cors({ origin: 'http://localhost:3000' }));
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-}));
-
+// Parse JSON bodies
 app.use(express.json());
 
+// Load env variables
 const {
   VIPPS_CLIENT_ID,
   VIPPS_CLIENT_SECRET,
@@ -37,7 +26,7 @@ const {
   VIPPS_PAYMENT_URL,
 } = process.env;
 
-// 🔐 Get Vipps access token
+// Function to get Vipps access token
 async function getAccessToken() {
   try {
     const response = await axios.post(
@@ -60,7 +49,7 @@ async function getAccessToken() {
   }
 }
 
-// 💳 Create Vipps payment
+// API endpoint to create payment
 app.post('/create-payment', async (req, res) => {
   const { amountValue, phoneNumber, reference, returnUrl, paymentDescription } = req.body;
 
@@ -105,6 +94,7 @@ app.post('/create-payment', async (req, res) => {
         null;
 
       if (!token) {
+        console.warn('Vipps payment token or redirect URL not found in response');
         return res.status(500).json({ error: 'Vipps payment token not found' });
       }
 
@@ -121,16 +111,20 @@ app.post('/create-payment', async (req, res) => {
   }
 });
 
-// 📦 Serve frontend (React build folder)
-app.use(express.static(path.join(__dirname, 'build')));
+// Serve static React build files
+app.use(express.static(path.resolve(__dirname, 'build')));
 
-// 🎯 Catch-all: Serve React index.html for unknown routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+app.get('/*path', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'), (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
 });
 
-// 🚀 Start server
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`Vipps backend listening on port ${PORT}`);
 });
