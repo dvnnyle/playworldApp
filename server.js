@@ -1,11 +1,27 @@
+const path = require('path');
 require('dotenv').config();
-
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:3000' }));
+
+// ✅ CORS middleware
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://your-frontend.onrender.com', // Replace with actual frontend URL on Render
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+}));
+
 app.use(express.json());
 
 const {
@@ -21,7 +37,7 @@ const {
   VIPPS_PAYMENT_URL,
 } = process.env;
 
-// Fetch Vipps access token using OAuth
+// 🔐 Get Vipps access token
 async function getAccessToken() {
   try {
     const response = await axios.post(
@@ -44,7 +60,7 @@ async function getAccessToken() {
   }
 }
 
-// Endpoint to create Vipps payment
+// 💳 Create Vipps payment
 app.post('/create-payment', async (req, res) => {
   const { amountValue, phoneNumber, reference, returnUrl, paymentDescription } = req.body;
 
@@ -52,16 +68,9 @@ app.post('/create-payment', async (req, res) => {
     const accessToken = await getAccessToken();
 
     const paymentPayload = {
-      amount: {
-        currency: 'NOK',
-        value: amountValue,
-      },
-      paymentMethod: {
-        type: 'WALLET',
-      },
-      customer: {
-        phoneNumber,
-      },
+      amount: { currency: 'NOK', value: amountValue },
+      paymentMethod: { type: 'WALLET' },
+      customer: { phoneNumber },
       reference,
       returnUrl,
       userFlow: 'WEB_REDIRECT',
@@ -84,14 +93,11 @@ app.post('/create-payment', async (req, res) => {
       },
     });
 
-    // Log full response for debugging
     console.log('Vipps payment response:', JSON.stringify(response.data, null, 2));
 
-    // Try to get redirect URL from response
     let vippsRedirectUrl = response.data.url || response.data.redirectUrl;
 
     if (!vippsRedirectUrl) {
-      // Try extracting token from various fields
       const token =
         response.data.token ||
         response.data.paymentToken ||
@@ -99,14 +105,12 @@ app.post('/create-payment', async (req, res) => {
         null;
 
       if (!token) {
-        console.warn('Vipps payment token or redirect URL not found in response');
         return res.status(500).json({ error: 'Vipps payment token not found' });
       }
 
       vippsRedirectUrl = `https://apitest.vipps.no/dwo-api-application/v1/deeplink/vippsgateway?v=2&token=${token}`;
     }
 
-    // Send redirect URL to frontend
     return res.json({ url: vippsRedirectUrl });
   } catch (error) {
     console.error('Error creating Vipps payment:', error.response?.data || error.message);
@@ -117,7 +121,16 @@ app.post('/create-payment', async (req, res) => {
   }
 });
 
+// 📦 Serve frontend (React build folder)
+app.use(express.static(path.join(__dirname, 'build')));
+
+// 🎯 Catch-all: Serve React index.html for unknown routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+// 🚀 Start server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`Vipps backend listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
