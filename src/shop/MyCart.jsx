@@ -7,8 +7,7 @@ export default function MyCart() {
   const [phoneNumber, setPhoneNumber] = useState(""); // after "47"
   const [buyerName, setBuyerName] = useState(""); // new buyer name state
   const [loading, setLoading] = useState(false);
-  const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:3000';
-
+  const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:3000";
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cartItems");
@@ -54,22 +53,27 @@ export default function MyCart() {
 
     setLoading(true);
 
-const paymentData = {
-  amountValue: totalPrice * 100,
-  phoneNumber: fullPhoneNumber,
-  buyerName: buyerName.trim(),
-  reference: Date.now().toString().slice(-8),
-  returnUrl: `${baseUrl}/PaymentReturn`,
-  paymentDescription: `Betaling for ${cartItems.length} varer`,
-};
+    // Generate the payment reference once here
+    const reference = Date.now().toString().slice(-8);
 
+    const paymentData = {
+      amountValue: totalPrice * 100,
+      phoneNumber: fullPhoneNumber,
+      buyerName: buyerName.trim(),
+      reference: reference, // pass this unique reference
+      returnUrl: `${baseUrl}/PaymentReturn`,
+      paymentDescription: `Betaling for ${cartItems.length} varer`,
+    };
 
     try {
       const vippsResponse = await createVippsPayment(paymentData);
       if (vippsResponse?.url) {
-        localStorage.setItem("orderReference", paymentData.reference);
-        localStorage.setItem("phoneNumber", paymentData.phoneNumber);
-        localStorage.setItem("buyerName", paymentData.buyerName);
+        // Store the reference and other info locally to track this payment/order
+        localStorage.setItem("orderReference", reference);
+        localStorage.setItem("phoneNumber", fullPhoneNumber);
+        localStorage.setItem("buyerName", buyerName.trim());
+
+        // Redirect to Vipps payment page
         window.location.href = vippsResponse.url;
       } else {
         alert("Vipps betalings-URL mottatt ikke.");
