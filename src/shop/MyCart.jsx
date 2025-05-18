@@ -7,6 +7,8 @@ export default function MyCart() {
   const [phoneNumber, setPhoneNumber] = useState(""); // after "47"
   const [buyerName, setBuyerName] = useState(""); // new buyer name state
   const [loading, setLoading] = useState(false);
+  const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:3000';
+
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cartItems");
@@ -52,14 +54,15 @@ export default function MyCart() {
 
     setLoading(true);
 
-    const paymentData = {
-      amountValue: totalPrice * 100,
-      phoneNumber: fullPhoneNumber,
-      buyerName: buyerName.trim(),
-reference: Date.now().toString().slice(-8),
-      returnUrl: "http://localhost:3000/PaymentReturn",
-      paymentDescription: `Betaling for ${cartItems.length} varer`,
-    };
+const paymentData = {
+  amountValue: totalPrice * 100,
+  phoneNumber: fullPhoneNumber,
+  buyerName: buyerName.trim(),
+  reference: Date.now().toString().slice(-8),
+  returnUrl: `${baseUrl}/PaymentReturn`,
+  paymentDescription: `Betaling for ${cartItems.length} varer`,
+};
+
 
     try {
       const vippsResponse = await createVippsPayment(paymentData);
