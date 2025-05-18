@@ -49,6 +49,29 @@ async function getAccessToken() {
   }
 }
 
+// Helper to mask URLs and tokens with friendly messages before logging
+function maskUrlsWithMessage(obj) {
+  const copy = { ...obj };
+
+  if (copy.url) {
+    copy.url = 'Redirect URL hidden for security';
+  }
+  if (copy.redirectUrl) {
+    copy.redirectUrl = 'Redirect URL hidden for security';
+  }
+  if (copy.token) {
+    copy.token = 'Token hidden for security';
+  }
+  if (copy.paymentToken) {
+    copy.paymentToken = 'Token hidden for security';
+  }
+  if (copy.data?.token) {
+    copy.data.token = 'Token hidden for security';
+  }
+
+  return copy;
+}
+
 // API endpoint to create payment
 app.post('/create-payment', async (req, res) => {
   const { amountValue, phoneNumber, reference, returnUrl, paymentDescription } = req.body;
@@ -82,7 +105,9 @@ app.post('/create-payment', async (req, res) => {
       },
     });
 
-    console.log('Vipps payment response:', JSON.stringify(response.data, null, 2));
+    // Mask URLs and tokens with friendly messages before logging
+    const maskedResponseData = maskUrlsWithMessage(response.data);
+    console.log('Vipps payment response:', JSON.stringify(maskedResponseData, null, 2));
 
     let vippsRedirectUrl = response.data.url || response.data.redirectUrl;
 
@@ -100,6 +125,9 @@ app.post('/create-payment', async (req, res) => {
 
       vippsRedirectUrl = `https://apitest.vipps.no/dwo-api-application/v1/deeplink/vippsgateway?v=2&token=${token}`;
     }
+
+    // Log the redirect URL as a hidden message instead of actual URL
+    console.log('Vipps redirect URL:', '[Redirect URL hidden for security]');
 
     return res.json({ url: vippsRedirectUrl });
   } catch (error) {
@@ -122,7 +150,6 @@ app.get('/*path', (req, res) => {
     }
   });
 });
-
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
