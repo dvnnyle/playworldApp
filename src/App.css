@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+
+:root {
+  --app-height: 100vh;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: var(--app-height);
+  background-color: #ffffff; /* Match your app theme */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+#root {
+  height: 100%;
+  background-color: #ffffff;
+}
