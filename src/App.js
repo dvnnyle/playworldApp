@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import Navbar from "./comp/Navbar";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Sor from "./pages/Sor";
+import Sor from "./pages/parks/Sor";
 import BookingPage from "./pages/BookingPage";
 import Products from "./shop/Products";
 import CreateUser from "./user/CreateUser";
@@ -15,8 +15,7 @@ import MyCart from "./shop/MyCart";
 import PaymentReturn from "./shop/PaymentReturn";
 import News from "./pages/News/News.jsx";
 import NewsForm from "./pages/News/NewsForm";
-
-
+import Settings from "./user/SettingsTabs/Settings";
 
 import ProductPage from "./ProductPage"
 import PageTransition from "./comp/PageTransition";
@@ -141,6 +140,14 @@ function AnimatedRoutes() {
           element={
             <PageTransition>
               <Profile />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/Settings"
+          element={
+            <PageTransition>
+              <Settings />
             </PageTransition>
           }
         />

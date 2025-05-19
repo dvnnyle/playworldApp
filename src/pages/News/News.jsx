@@ -68,7 +68,7 @@ export default function News() {
               className="modal-image"
             />
             <h2>{modalPost.title}</h2>
-            <p className="location">📍 {modalPost.location}</p>
+            <p className="location">{modalPost.location}</p>
             <small>{formatDate(modalPost.timestamp)}</small>
             <p className="modal-text">{modalPost.content}</p>
             <button

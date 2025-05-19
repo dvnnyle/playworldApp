@@ -33,6 +33,9 @@ export default function Home() {
             src={pwsImage} 
             alt="PWS building" 
             className="rectangle-image" 
+            draggable={false}
+            onContextMenu={e => e.preventDefault()}
+            style={{ userSelect: 'none' }}
           />
           <h2 className="image-title">
             📍 SØRLANDET <span className="subtitle">KRISTIANSAND</span>
@@ -51,6 +54,9 @@ export default function Home() {
             src={pwsImage} 
             alt="PWS building" 
             className="rectangle-image" 
+            draggable={false}
+            onContextMenu={e => e.preventDefault()}
+            style={{ userSelect: 'none' }}
           />
           <h2 className="image-title">
             📍 TRIADEN <span className="subtitle">LØRENSKOG</span>

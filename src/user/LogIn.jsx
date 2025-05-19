@@ -81,19 +81,19 @@ export default function Login() {
           required
         />
         <button className="login-button" type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Logging in..." : "Logg inn"}
         </button>
         {errorMsg && <p className="error-message">{errorMsg}</p>}
 
         <div className="create-account-container">
           <p className="create-account-text">
-            Don't have an account?{" "}
+            Ingen bruker?{" "}
             <button
               type="button"
               className="create-account-button"
               onClick={() => navigate("/CreateUser")}
             >
-              Create an account here
+              Opprett bruker her
             </button>
           </p>
         </div>

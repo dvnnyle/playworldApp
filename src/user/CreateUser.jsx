@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import './CreateUser.css';
 
-import { auth, db } from "../firebase"; // Your firebase config file
+import { useNavigate } from "react-router-dom";
+import { auth, db } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   updateProfile
@@ -11,6 +12,7 @@ import {
   setDoc,
   serverTimestamp
 } from "firebase/firestore";
+import pwsLogo from "../assets/logo.png"; // Make sure the path is correct
 
 export default function CreateUser() {
   const [name, setName] = useState("");
@@ -19,6 +21,7 @@ export default function CreateUser() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -33,8 +36,8 @@ export default function CreateUser() {
       // Update displayName in Auth profile
       await updateProfile(user, { displayName: name });
 
-      // Store additional user info in Firestore under uid
-      await setDoc(doc(db, "users", user.uid), {
+      // Store additional user info in Firestore under email as document ID
+      await setDoc(doc(db, "users", email.toLowerCase()), {
         name,
         email: email.toLowerCase(),
         phone,
@@ -46,6 +49,11 @@ export default function CreateUser() {
       setEmail("");
       setPhone("");
       setPassword("");
+
+      // Redirect to login page after short delay
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (error) {
       setMsg("Error: " + error.message);
     }
@@ -54,36 +62,53 @@ export default function CreateUser() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <input
-        placeholder="Phone"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <button type="submit" disabled={loading}>
-        {loading ? "Saving..." : "Create User"}
-      </button>
-      {msg && <p>{msg}</p>}
-    </form>
+    <div>
+      <div className="global-rectangle">
+        <h1 className="global-title">NY BRUKER</h1>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <img
+          src={pwsLogo}
+          alt="PWS logo"
+          style={{ width: "80px", display: "block", margin: "0 auto 16px auto" }}
+        />
+        <h2 style={{ textAlign: "center" }}>Opprett ny bruker</h2>
+        
+        <input
+          placeholder="Navn"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+        <input
+          type="email"
+          placeholder="E-post"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          placeholder="Telefon"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Passord"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+<button
+  type="submit"
+  className="create-user-btn"
+  disabled={loading}
+>
+  {loading ? "Lagrer..." : "Opprett bruker"}
+</button>
+        {msg && <p>{msg}</p>}
+      </form>
+    </div>
   );
 }

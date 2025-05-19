@@ -22,14 +22,14 @@ text-align: center;
 /* Submit button */
 .login-button {
   width: 100%;
-  padding: 12px;
-  font-size: 16px;
+  padding: 14px;
+    font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
   border-radius: 25px;
   background: linear-gradient(240deg, #20b14c 0%, #fec76f 100%);
   color: #fff;
   border: none;
-  transition: background 0.2s;
 }
 /* Disabled button style */
 .login-button:disabled {

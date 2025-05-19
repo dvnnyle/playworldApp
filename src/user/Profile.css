@@ -2,7 +2,6 @@
   max-width: calc(100% - 20px);
   background: #fff;
   border-radius: 25px;
-  color: #333;
   text-align: center;
   margin: 10px;
   padding: 20px;
@@ -11,7 +10,7 @@
 .profile-container h2 {
   margin-bottom: 20px;
   font-weight: 700;
-  color: #007bff;
+  color: #a200ff;
   font-size: 28px;
   margin-top: 0px;
 
@@ -24,16 +23,67 @@
 
 
 .logout-btn {
-    width: calc(100% - 20px);
-
-  margin: 0 10px; /* top-bottom 0, left-right 10px */
-  padding: 12px 24px;
+  width: calc(100% - 20px);  /* fills almost full width */
   font-size: 16px;
+  padding: 14px;
   border-radius: 25px;
   border: none;
   background-color: #d9534f; /* danger red */
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease;
+  font-weight: bold;
+}
+
+.profile-cards-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 100px;
+
+}
+.profile-card-button {
+  width: calc(100% - 20px);
+  margin: 0 10px;
+  background: #f5f5f5;
+  border-radius: 25px;
+  padding: 10px;
+  gap: 20PX;
+  text-align: left;
+  min-height: 60px;
+  display: flex;
+  flex-direction: row;         /* row to place emoji and h3 side by side */
+  align-items: center;         /* center vertically */
+  justify-content: flex-start; /* left align content */
+}
+
+.emoji-square {
+  width: 48px;
+  height: 48px;
+  background: #dfe0d7;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;   /* smaller emoji */
+  padding: 0px;        /* bigger padding inside the square */
+}
+
+.profile-card-button h3 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Remove blue highlight on tap/click for WebKit browsers */
+.profile-container,
+.profile-card-button,
+.emoji-square,
+.logout-btn {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
 }

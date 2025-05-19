@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
-import '../style/global.css';
-import '../style/Sor.css';
-import pwsImage from '../assets/pws.png';
+import '../../style/global.css';
+import '../../style/Sor.css';
+import pwsImage from '../../assets/pws.png';
 import { FaInstagram, FaFacebookF, FaTiktok, FaGlobe } from 'react-icons/fa';
 
 export default function Sor() {
@@ -33,7 +33,7 @@ export default function Sor() {
 
         <div className="social-icons" style={{ gap: '15px' }}>
           <a
-            href="https://www.instagram.com/playwolrd"
+            href="https://www.instagram.com/playworld"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"

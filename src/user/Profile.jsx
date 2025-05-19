@@ -40,7 +40,7 @@ export default function Profile() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/login"); // Redirect to login after logout
+      navigate("/login"); 
     } catch (err) {
       alert("Logout failed: " + err.message);
     }
@@ -50,7 +50,7 @@ export default function Profile() {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="profile-page">
+    <>
       <div className="global-rectangle">
         <h1 className="global-title">PROFIL</h1>
       </div>
@@ -72,9 +72,80 @@ export default function Profile() {
         )}
       </div>
 
-      <button className="logout-btn" onClick={handleLogout}>
-        Logg ut
-      </button>
-    </div>
+      <div className="profile-cards-wrapper">
+        <div
+          className="profile-card-button"
+          onClick={() => {
+            window.navigator.vibrate?.(10);
+          }}
+          tabIndex={0}
+          role="button"
+          onKeyPress={e => {
+            if (e.key === "Enter" || e.key === " ") window.navigator.vibrate?.(10);
+          }}
+        >
+          <div className="emoji-square">🎟️</div>
+          <h3>KLIPPEKORT</h3>
+        </div>
+        <div
+          className="profile-card-button"
+          onClick={() => {
+            window.navigator.vibrate?.(10);
+          }}
+          tabIndex={0}
+          role="button"
+          onKeyPress={e => {
+            if (e.key === "Enter" || e.key === " ") window.navigator.vibrate?.(10);
+          }}
+        >
+          <div className="emoji-square">🎉</div>
+          <h3>KUPONGER</h3>
+        </div>
+        <div
+          className="profile-card-button"
+          onClick={() => {
+            window.navigator.vibrate?.(10);
+          }}
+          tabIndex={0}
+          role="button"
+          onKeyPress={e => {
+            if (e.key === "Enter" || e.key === " ") window.navigator.vibrate?.(10);
+          }}
+        >
+          <div className="emoji-square">🏆</div>
+          <h3>ORDRE</h3>
+        </div>
+        <div
+          className="profile-card-button"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            window.navigator.vibrate?.(10);
+            navigate("/Settings");
+          }}
+          tabIndex={0}
+          role="button"
+          onKeyPress={e => {
+            if (e.key === "Enter" || e.key === " ") {
+              window.navigator.vibrate?.(10);
+              navigate("/Settings");
+            }
+          }}
+        >
+          <div className="emoji-square">⭐</div>
+          <h3>INNSTILLINGER</h3>
+        </div>
+  <hr style={{ width: "90%", margin: "20px auto" }} />
+
+        <button
+          className="logout-btn"
+          onClick={() => {
+            window.navigator.vibrate?.(10);
+            handleLogout();
+          }}
+        >
+          Logg ut
+        </button>
+      </div>
+    </>
   );
 }

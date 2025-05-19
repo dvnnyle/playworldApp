@@ -49,7 +49,10 @@ export default function NewsPostsList({ posts, onDelete, onOpenModal }) {
             }
             alt=""
             onClick={() => onOpenModal(post)}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", userSelect: "none", pointerEvents: "auto" }}
+            draggable={false}
+            tabIndex={-1}
+            onContextMenu={e => e.preventDefault()} // Prevent right-click menu
           />
           <div
             className="preview-content"
@@ -69,27 +72,27 @@ export default function NewsPostsList({ posts, onDelete, onOpenModal }) {
 
       {archivePosts.length > 0 && (
         <>
-<button
-  className="archive-btn"
-  style={{
-    marginTop: "24px",
-    background: "transparent",
-    color: "grey",
-    border: "none",
-    borderRadius: "0",
-    padding: "0",
-    fontWeight: 600,
-    cursor: "pointer",
-    fontSize: "1rem",
-    width: "10%",
-    display: "block",
-    marginLeft: "auto",
-    marginRight: "auto"
-  }}
-  onClick={() => setShowArchive((prev) => !prev)}
->
-  {showArchive ? "- Lukk arkiv ." : "- Åpne arkiv -"}
-</button>
+          <button
+            className="archive-btn"
+            style={{
+              marginTop: "24px",
+              background: "transparent",
+              color: "grey",
+              border: "none",
+              borderRadius: "0",
+              padding: "0",
+              fontWeight: 600,
+              cursor: "pointer",
+              fontSize: "1rem",
+              width: "10%",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto"
+            }}
+            onClick={() => setShowArchive((prev) => !prev)}
+          >
+            {showArchive ? "- Lukk arkiv ." : "- Åpne arkiv -"}
+          </button>
           {showArchive &&
             archivePosts.map((post, index) => (
               <div key={`archive-${index}`} className="preview-box" style={{ position: "relative" }}>
@@ -109,7 +112,10 @@ export default function NewsPostsList({ posts, onDelete, onOpenModal }) {
                   }
                   alt=""
                   onClick={() => onOpenModal(post)}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer", userSelect: "none", pointerEvents: "auto" }}
+                  draggable={false}
+                  tabIndex={-1}
+                  onContextMenu={e => e.preventDefault()} // Prevent right-click menu
                 />
                 <div
                   className="preview-content"
