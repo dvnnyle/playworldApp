@@ -37,8 +37,14 @@ export default function Home() {
             onContextMenu={e => e.preventDefault()}
             style={{ userSelect: 'none' }}
           />
-          <h2 className="image-title">
-            📍 SØRLANDET <span className="subtitle">KRISTIANSAND</span>
+          <h2
+            className="image-title"
+            draggable={false}
+            tabIndex={-1}
+            style={{ userSelect: "none", pointerEvents: "none" }}
+            onContextMenu={e => e.preventDefault()}
+          >
+            📍 SØRLANDET <span className="subtitle" style={{ userSelect: "none", pointerEvents: "none" }}>KRISTIANSAND</span>
           </h2>
         </div>
 
@@ -58,8 +64,14 @@ export default function Home() {
             onContextMenu={e => e.preventDefault()}
             style={{ userSelect: 'none' }}
           />
-          <h2 className="image-title">
-            📍 TRIADEN <span className="subtitle">LØRENSKOG</span>
+          <h2
+            className="image-title"
+            draggable={false}
+            tabIndex={-1}
+            style={{ userSelect: "none", pointerEvents: "none" }}
+            onContextMenu={e => e.preventDefault()}
+          >
+            📍 TRIADEN <span className="subtitle" style={{ userSelect: "none", pointerEvents: "none" }}>LØRENSKOG</span>
           </h2>
         </div>
 

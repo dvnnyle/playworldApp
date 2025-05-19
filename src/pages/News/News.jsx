@@ -66,6 +66,10 @@ export default function News() {
               }
               alt=""
               className="modal-image"
+              draggable={false}
+              tabIndex={-1}
+              style={{ userSelect: "none", pointerEvents: "none" }}
+              onContextMenu={e => e.preventDefault()}
             />
             <h2>{modalPost.title}</h2>
             <p className="location">{modalPost.location}</p>
