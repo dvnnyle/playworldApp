@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
@@ -17,10 +17,18 @@ import News from "./pages/News/News.jsx";
 import NewsForm from "./pages/News/NewsForm";
 import Settings from "./user/SettingsTabs/Settings";
 
-import ProductPage from "./ProductPage"
 import PageTransition from "./comp/PageTransition";
 
 function AnimatedRoutes() {
+  useEffect(() => {
+    const setAppHeight = () => {
+      document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+    };
+    setAppHeight();
+    window.addEventListener('resize', setAppHeight);
+    return () => window.removeEventListener('resize', setAppHeight);
+  }, []);
+
   const location = useLocation();
 
   return (
@@ -34,20 +42,7 @@ function AnimatedRoutes() {
             </PageTransition>
           }
         />
-
-
         <Route
-        
-          path="/ProductPage"
-          element={
-            <PageTransition>
-              <ProductPage />
-            </PageTransition>
-          }
-        />
-
-                <Route
-        
           path="/NewsForm"
           element={
             <PageTransition>
@@ -55,9 +50,7 @@ function AnimatedRoutes() {
             </PageTransition>
           }
         />
-
-                       <Route
-        
+        <Route
           path="/News"
           element={
             <PageTransition>
@@ -66,8 +59,7 @@ function AnimatedRoutes() {
           }
         />
         <Route
-
-             path="/PaymentReturn"
+          path="/PaymentReturn"
           element={
             <PageTransition>
               <PaymentReturn />
@@ -75,11 +67,6 @@ function AnimatedRoutes() {
           }
         />
         <Route
-
-
-
-  
-        
           path="/about"
           element={
             <PageTransition>
@@ -127,7 +114,7 @@ function AnimatedRoutes() {
             </PageTransition>
           }
         />
-                <Route
+        <Route
           path="/MyCart"
           element={
             <PageTransition>
@@ -151,9 +138,6 @@ function AnimatedRoutes() {
             </PageTransition>
           }
         />
-
-
-
       </Routes>
     </AnimatePresence>
   );

@@ -42,16 +42,13 @@
   --app-height: 100vh;
 }
 
-html, body {
+html, body, #root {
   margin: 0;
   padding: 0;
   height: var(--app-height);
-  background-color: #ffffff; /* Match your app theme */
+  background-color: #f5945c; /* Match your app's theme color */
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
-}
-
-#root {
-  height: 100%;
-  background-color: #ffffff;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
