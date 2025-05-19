@@ -1,0 +1,263 @@
+.preview-box {
+  width: calc(100% - 20px); /* Full width minus 10px left + 10px right */
+  margin: 1rem 10px 0 10px; /* 10px margin left and right */
+  box-sizing: border-box;   /* include padding and border in width */
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  
+}
+
+
+.preview-box img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 20px;
+  flex-shrink: 0;
+}   
+
+.preview-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+
+
+
+.date {
+  color: #22222273;
+  font-size: 0.8rem;
+  text-align: left;
+  
+}
+
+.preview-content h3 {
+  margin-top: 0px;
+  margin-bottom: 0;
+  line-height: 1.2;
+}
+
+
+.preview-content p {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.news-label-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  margin-top: 8px; /* add this to push it down */
+}
+
+
+.news-label-text {
+  font-weight: bold;
+  font-size: 14px;
+  color: #20b14c;
+  line-height: 1;  /* Keep it tight */
+}
+
+
+.preview-content h3,
+.preview-content p,
+.preview-content .date {
+  margin-top: 0;
+  margin-bottom: 4px; /* or smaller if needed */
+}
+
+
+
+
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Move modal to the top */
+  z-index: 1000;
+}
+
+.modal-content {
+  margin: 78px 10px 0 10px; /* Add top margin to push modal down from the top */
+  width: auto;
+  max-width: 600px;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 25px !important;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-image {
+  width: 100%;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+}
+
+.modal-text {
+    border-top: solid 1px #ccc;
+        border-bottom: solid 1px #ccc;
+
+padding: 10px 0;
+  margin-bottom: 1rem;
+  white-space: pre-wrap; /* to keep line breaks if user writes them */
+}
+
+.modal-close-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #ef5634;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.modal-content h2,
+.modal-content .location,
+.modal-content small {
+  margin-top: 0;
+  margin-bottom: 4px; /* small space between them */
+}
+
+
+.modal-content,
+.modal-content h2,
+.modal-content p,
+.modal-content small,
+.modal-content .location {
+  text-align: left;
+}
+
+
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ff4d4f;
+  border: none;
+  color: white;
+  font-size: 20px;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  line-height: 20px;
+  text-align: center;
+  padding: 0;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+}
+
+
+.news-form {
+  display: flex;
+  flex-direction: column; /* stack children vertically */
+    border-radius: 25px;
+
+}
+
+.news-form select,
+.news-form input {
+  margin-bottom: 16px;
+  border-radius: 25px;
+  height: 40px;
+  padding-left: 16px;
+  padding-right: 16px;
+    border: 1px solid #222;
+
+
+}
+
+
+
+.news-form textarea {
+  margin-bottom: 16px; /* Adjust as needed */
+  border-radius: 25px;
+        padding: 16px; /* Add this line to move text right */
+  border: 1px solid #222;
+
+}
+
+
+
+
+.news-form button[type="submit"] {
+  background: #212121;
+  color: #fff;
+  border: none;
+  border-radius: 25px !important;
+  height: 40px;
+  padding: 0 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-content {
+  /* ...existing styles... */
+  animation: modalFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+.preview-box,
+.preview-box * {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE10+/Edge */
+  user-select: none;         /* Standard */
+  -webkit-tap-highlight-color: transparent; /* Remove blue highlight on mobile */
+}
+
+body.news-page-body,
+.news-form-page-body {
+  padding-bottom: 180px; /* Add extra space at the bottom */
+}
+
+@media (max-width: 600px) {
+  body.news-page-body,
+  .news-form-page-body {
+    padding-bottom: 120px; /* Even more space for mobile if needed */
+  }
+}
+
+.posts-list {
+  padding-bottom: 120px;
+}
+
+@media (max-width: 600px) {
+  .posts-list {
+    padding-bottom: 120px;
+  }
+}

@@ -26,8 +26,11 @@ text-align: center;
   font-size: 16px;
   cursor: pointer;
   border-radius: 25px;
+  background: linear-gradient(240deg, #20b14c 0%, #fec76f 100%);
+  color: #fff;
+  border: none;
+  transition: background 0.2s;
 }
-
 /* Disabled button style */
 .login-button:disabled {
   opacity: 0.6;
@@ -57,7 +60,7 @@ text-align: center;
 .create-account-button {
   background: none;
   border: none;
-  color: #0066cc;
+  color: #20b14c;
   cursor: pointer;
   text-decoration: underline;
   padding: 0;

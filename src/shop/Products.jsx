@@ -10,6 +10,11 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Helper for haptic feedback
+  const vibrate = () => {
+    if (navigator.vibrate) navigator.vibrate(30);
+  };
+
   // Load quantities from localStorage on mount
   useEffect(() => {
     const savedQuantities = localStorage.getItem("productQuantities");
@@ -148,7 +153,10 @@ export default function Products() {
                     <div className="quantity-controls">
                       <button
                         className="qty-btn"
-                        onClick={() => decrementQuantity(product.id)}
+                        onClick={() => {
+                          vibrate();
+                          decrementQuantity(product.id);
+                        }}
                         aria-label={`Decrease quantity for ${product.name}`}
                       >
                         –
@@ -156,7 +164,10 @@ export default function Products() {
                       <span className="qty-display">{quantities[product.id] || 0}</span>
                       <button
                         className="qty-btn"
-                        onClick={() => incrementQuantity(product.id)}
+                        onClick={() => {
+                          vibrate();
+                          incrementQuantity(product.id);
+                        }}
                         aria-label={`Increase quantity for ${product.name}`}
                       >
                         +
@@ -194,13 +205,21 @@ export default function Products() {
           </div>
 
           <div className="add-all-container">
-            <button className="add-all-btn" onClick={handleAddAllToCart}>
+            <button
+              className="add-all-btn"
+              onClick={() => {
+                vibrate();
+                handleAddAllToCart();
+              }}
+            >
               Gå til betaling
             </button>
             <button
               className="clear-btn"
-              onClick={() => setQuantities({})}
-
+              onClick={() => {
+                vibrate();
+                setQuantities({});
+              }}
             >
               Fjern alt
             </button>

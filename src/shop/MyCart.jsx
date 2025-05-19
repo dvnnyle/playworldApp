@@ -88,6 +88,9 @@ export default function MyCart() {
 
   return (
     <>
+          <div className="global-rectangle">
+        <h1 className="global-title">Handlekurv</h1>
+      </div>
       <div className="mycart-wrapper">
         <h1>Sammendrag</h1>
         <ul className="cart-summary-list">

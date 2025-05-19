@@ -1,0 +1,22 @@
+.news-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.news-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.location {
+  font-style: italic;
+  color: #555;
+}
+
+small {
+  color: #888;
+}

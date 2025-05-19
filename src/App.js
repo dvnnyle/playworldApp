@@ -13,6 +13,9 @@ import LogIn from "./user/LogIn";
 import Profile from "./user/Profile";
 import MyCart from "./shop/MyCart";
 import PaymentReturn from "./shop/PaymentReturn";
+import News from "./pages/News/News.jsx";
+import NewsForm from "./pages/News/NewsForm";
+
 
 
 import ProductPage from "./ProductPage"
@@ -40,6 +43,26 @@ function AnimatedRoutes() {
           element={
             <PageTransition>
               <ProductPage />
+            </PageTransition>
+          }
+        />
+
+                <Route
+        
+          path="/NewsForm"
+          element={
+            <PageTransition>
+              <NewsForm />
+            </PageTransition>
+          }
+        />
+
+                       <Route
+        
+          path="/News"
+          element={
+            <PageTransition>
+              <News />
             </PageTransition>
           }
         />

@@ -23,8 +23,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "node server.jsx",
+"start": "node sercer.jsx",
     "build": "react-scripts build"
+
   },
   "eslintConfig": {
     "extends": [

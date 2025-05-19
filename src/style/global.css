@@ -7,7 +7,6 @@ body {
 }
 
 
-
 .logo-div {
   display: flex;
   justify-content: center; /* centers horizontally */
@@ -43,13 +42,13 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
   /* REMOVE margin-top to center vertically */
-  margin: 25px 0 0 0; /* move down 5px */
+  margin: 0px 0 0 0; /* move down 5px */
 }
 
 .back-button {
   position: absolute;
   left: 8%;        /* or adjust as needed */
-  top: calc(50% + 12px); /* move 5px down */
+  top: calc(50%); /* move 5px down */
   transform: translateY(-50%);
   background: none;
   border: none;
@@ -61,13 +60,8 @@ body {
   display: flex;
   align-items: center;
   font-size: 1.5rem;
-  
-
 }
 
-.back-button:hover {
-  color: #0056b3;
-}
 
 
 

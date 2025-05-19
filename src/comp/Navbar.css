@@ -2,17 +2,14 @@
 .nav {
   position: fixed;
   bottom: 20px;
-  left: 10px;          /* shift right by 20px */
-  width: calc(100% - 20px); /* full width minus left + right padding */
+  left: 10px;
+  right: 10px; /* Add this */
   background-color: #fec76f;
-  padding: 5px 0; /* Reduced height */
+  padding: 5px 0;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
-  border-radius: 25px; /* optional: rounded corners for style */
+  border-radius: 25px;
   z-index: 1000;
 }
-
-
-
 
 .nav-list {
   display: flex;
@@ -34,5 +31,16 @@
   align-items: center;
   padding: 10px;
   transition: transform 0.2s ease;
+}
+
+@media (min-width: 900px) {
+  .nav {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 500px; /* or your preferred max width */
+    min-width: 320px;
+    max-width: calc(100vw - 20px);
+  }
 }
 
