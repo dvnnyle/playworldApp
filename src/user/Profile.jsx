@@ -17,8 +17,7 @@ export default function Profile() {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          const userDocRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(userDocRef);
+const userDocRef = doc(db, "users", user.email.toLowerCase());          const docSnap = await getDoc(userDocRef);
 
           if (docSnap.exists()) {
             setUserData(docSnap.data());
@@ -87,6 +86,24 @@ export default function Profile() {
           <div className="emoji-square">🎟️</div>
           <h3>KLIPPEKORT</h3>
         </div>
+                <div
+          className="profile-card-button"
+          onClick={() => {
+            window.navigator.vibrate?.(10);
+            // Add your navigation or action here
+          }}
+          tabIndex={0}
+          role="button"
+          onKeyPress={e => {
+            if (e.key === "Enter" || e.key === " ") {
+              window.navigator.vibrate?.(10);
+              // Add your navigation or action here
+            }
+          }}
+        >
+          <div className="emoji-square">🎫</div>
+          <h3>BILETTER</h3>
+        </div>
         <div
           className="profile-card-button"
           onClick={() => {
@@ -105,11 +122,15 @@ export default function Profile() {
           className="profile-card-button"
           onClick={() => {
             window.navigator.vibrate?.(10);
+            navigate("/orders");
           }}
           tabIndex={0}
           role="button"
           onKeyPress={e => {
-            if (e.key === "Enter" || e.key === " ") window.navigator.vibrate?.(10);
+            if (e.key === "Enter" || e.key === " ") {
+              window.navigator.vibrate?.(10);
+              navigate("/orders");
+            }
           }}
         >
           <div className="emoji-square">🏆</div>
@@ -134,7 +155,9 @@ export default function Profile() {
           <div className="emoji-square">⭐</div>
           <h3>INNSTILLINGER</h3>
         </div>
-  <hr style={{ width: "90%", margin: "20px auto" }} />
+        {/* New card button below */}
+
+        <hr style={{ width: "90%", margin: "20px auto" }} />
 
         <button
           className="logout-btn"

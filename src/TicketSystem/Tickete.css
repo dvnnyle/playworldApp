@@ -1,0 +1,91 @@
+.tickets-page {
+  max-width: 500px;
+  margin: 32px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(32, 177, 76, 0.08);
+  padding: 32px 20px 24px 20px;
+}
+
+.tickets-page h1 {
+  text-align: center;
+  color: #20b14c;
+  margin-bottom: 28px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.ticket-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ticket-item {
+  border: 1.5px solid #20b14c22;
+  border-radius: 14px;
+  background: #f8fff9;
+  margin: 10px 0;
+  padding: 18px 16px 16px 16px;
+  box-shadow: 0 2px 8px rgba(32, 177, 76, 0.04);
+  transition: box-shadow 0.2s;
+}
+
+.ticket-item strong {
+  font-size: 1.1em;
+  color: #222;
+}
+
+.ticket-item div {
+  margin-top: 6px;
+  font-size: 1em;
+}
+
+.ticket-item .ticket-timer {
+  display: block;
+  color: #20b14c;
+  font-weight: 700;
+  margin-top: 18px;
+  font-size: 2em;
+  letter-spacing: 1px;
+  text-align: left;
+  line-height: 1.1;
+}
+
+/* Optional: Make the timer look like an h3 */
+.ticket-item .ticket-timer span {
+  font-size: 1.2em;
+  font-weight: 700;
+  font-family: inherit;
+}
+
+.ticket-item button.start-ticket-btn {
+  margin-top: 12px;
+  background: #20b14c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(32, 177, 76, 0.08);
+  transition: background 0.2s;
+}
+
+.ticket-item button.start-ticket-btn:hover {
+  background: #17913a;
+}
+
+.ticket-item span {
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .tickets-page {
+    padding: 12px 2vw 18px 2vw;
+  }
+  .ticket-item {
+    padding: 12px 8px 12px 8px;
+  }
+}

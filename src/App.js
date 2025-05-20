@@ -16,6 +16,8 @@ import PaymentReturn from "./shop/PaymentReturn";
 import News from "./pages/News/News.jsx";
 import NewsForm from "./pages/News/NewsForm";
 import Settings from "./user/SettingsTabs/Settings";
+import Tickets from "./TicketSystem/Tickets";
+import Orders from "./user/SettingsTabs/Orders";
 
 import PageTransition from "./comp/PageTransition";
 
@@ -135,6 +137,22 @@ function AnimatedRoutes() {
           element={
             <PageTransition>
               <Settings />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/tickets"
+          element={
+            <PageTransition>
+              <Tickets />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <PageTransition>
+              <Orders />
             </PageTransition>
           }
         />

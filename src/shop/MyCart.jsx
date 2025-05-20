@@ -6,8 +6,9 @@ export default function MyCart() {
   const [cartItems, setCartItems] = useState([]);
   const [phoneNumber, setPhoneNumber] = useState(""); // after "47"
   const [buyerName, setBuyerName] = useState(""); // new buyer name state
+  const [email, setEmail] = useState(""); // Add this line with your other useState hooks
   const [loading, setLoading] = useState(false);
-  const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:3000";
+const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:3000";
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cartItems");
@@ -42,6 +43,10 @@ export default function MyCart() {
       alert("Vennligst skriv inn ditt navn.");
       return;
     }
+    if (!email.trim()) {
+      alert("Vennligst skriv inn din e-post.");
+      return;
+    }
     if (!phoneNumber.trim()) {
       alert("Vennligst skriv inn telefonnummeret etter '47'.");
       return;
@@ -60,8 +65,10 @@ export default function MyCart() {
       amountValue: totalPrice * 100,
       phoneNumber: fullPhoneNumber,
       buyerName: buyerName.trim(),
+      email: email.trim(),
       reference: reference, // pass this unique reference
       returnUrl: `${baseUrl}/PaymentReturn`,
+//returnUrl: "http://localhost:3000/PaymentReturn",
       paymentDescription: `Betaling for ${cartItems.length} varer`,
     };
 
@@ -72,6 +79,7 @@ export default function MyCart() {
         localStorage.setItem("orderReference", reference);
         localStorage.setItem("phoneNumber", fullPhoneNumber);
         localStorage.setItem("buyerName", buyerName.trim());
+        localStorage.setItem("email", email.trim());
 
         // Redirect to Vipps payment page
         window.location.href = vippsResponse.url;
@@ -117,6 +125,20 @@ export default function MyCart() {
           value={buyerName}
           onChange={(e) => setBuyerName(e.target.value)}
           placeholder="Ditt navn"
+          required
+        />
+
+        {/* Add email input field */}
+        <label htmlFor="email" className="phone-label">
+          E-post:
+        </label>
+        <input
+          type="email"
+          id="email"
+          className="phone-input"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="din@email.no"
           required
         />
 

@@ -36,8 +36,11 @@ export default function CreateUser() {
       // Update displayName in Auth profile
       await updateProfile(user, { displayName: name });
 
-      // Store additional user info in Firestore under email as document ID
-      await setDoc(doc(db, "users", email.toLowerCase()), {
+      // Reference to Firestore document using user's email
+      const userDocRef = doc(db, "users", user.email.toLowerCase());
+
+      // Store additional user info in Firestore under user UID as document ID
+      await setDoc(userDocRef, {
         name,
         email: email.toLowerCase(),
         phone,

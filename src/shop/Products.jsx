@@ -105,6 +105,10 @@ export default function Products() {
       name: p.name,
       quantity: quantities[p.id],
       price: p.price,
+      category: p.category, // <-- ensure this is included
+      type: p.type,         // <-- ensure this is included
+            duration: p.duration,         // <-- ensure this is included
+
     }));
 
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
@@ -113,10 +117,12 @@ export default function Products() {
 
   const getCategoryImage = (category) => {
     switch (category?.toLowerCase()) {
-      case "billetter":
-        return require("../assets/pws.png");
+      case "golf":
+        return require("../assets/Minigolf.webp"); // <-- your golf image
+      case "lek":
+        return require("../assets/Lekeland.webp");
       case "tilbehør":
-        return require("../assets/pws.png");
+        return require("../assets/Tilbehør.webp");
       case "annet":
         return require("../assets/pws.png");
       default:

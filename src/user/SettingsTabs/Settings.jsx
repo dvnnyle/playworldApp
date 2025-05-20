@@ -13,10 +13,6 @@ export default function Settings() {
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // For username change
-  const [username, setUsername] = useState("");
-  const [usernameMsg, setUsernameMsg] = useState("");
-
   // For password change
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -35,7 +31,6 @@ export default function Settings() {
         setEmail(data.email || "");
         setPhone(data.phone || "");
         setDob(data.dob || "");
-        setUsername(data.username || "");
       }
       setLoading(false);
     });

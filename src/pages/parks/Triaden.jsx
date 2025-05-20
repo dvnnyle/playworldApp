@@ -28,6 +28,8 @@ export default function Sor() {
             src={pwsImage}
             alt="PWS building"
             className="park-image"
+            draggable={false}
+            onContextMenu={e => e.preventDefault()}
           />
         </div>
 
