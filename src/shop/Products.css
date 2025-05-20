@@ -187,12 +187,12 @@ body.products-page-body {
 
 @media (max-width: 900px) {
   .products-wrapper {
-    margin-bottom: 200px;
+    margin-bottom: 120;
   }
 }
 @media (min-width: 901px) {
   .products-wrapper {
-    margin-bottom:220px;
+    margin-bottom:120px;
   }
 }
 
