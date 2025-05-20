@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./Orders.css";
 import { db, auth } from "../../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, collection, getDocs } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import '../../style/global.css';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -16,13 +17,12 @@ export default function Orders() {
       }
       const userEmail = user.email.toLowerCase();
       const userDocRef = doc(db, "users", userEmail);
-      const userDocSnap = await getDoc(userDocRef);
-      if (userDocSnap.exists()) {
-        const data = userDocSnap.data();
-        setOrders((data.allOrders || []).filter(order => order.items && order.items.length > 0));
-      } else {
-        setOrders([]);
-      }
+      const ordersColRef = collection(userDocRef, "newOrders");
+      const querySnapshot = await getDocs(ordersColRef);
+      const fetchedOrders = querySnapshot.docs
+        .map(doc => doc.data())
+        .filter(order => order.items && order.items.length > 0);
+      setOrders(fetchedOrders);
     });
     return () => unsubscribe();
   }, []);

@@ -1,3 +1,22 @@
+:root {
+  --app-height: 100vh;
+  color-scheme: light; /* Force light mode rendering by browser */
+}
+
+/* Reset and base styles */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: var(--app-height);
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  background-color: #010f3c; /* Consistent dark navy blue */
+  color: white;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
 .App {
   text-align: center;
 }
@@ -14,7 +33,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #010f3c; /* Match background to root theme */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -37,18 +56,5 @@
   }
 }
 
-
-:root {
-  --app-height: 100vh;
-}
-
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  height: var(--app-height);
-  background-color: #f5945c; /* Match your app's theme color */
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-}
+/* Import Poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');

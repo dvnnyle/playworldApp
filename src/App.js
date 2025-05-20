@@ -19,6 +19,7 @@ import Settings from "./user/SettingsTabs/Settings";
 import Tickets from "./TicketSystem/Tickets";
 import Orders from "./user/SettingsTabs/Orders";
 
+
 import PageTransition from "./comp/PageTransition";
 
 function AnimatedRoutes() {
@@ -149,7 +150,7 @@ function AnimatedRoutes() {
           }
         />
         <Route
-          path="/orders"
+          path="/Orders"
           element={
             <PageTransition>
               <Orders />

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PaymentReturn.css";
 import { db, auth } from "../firebase";
-import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, collection, addDoc, getDocs } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 export default function PaymentReturn() {
@@ -95,24 +95,22 @@ export default function PaymentReturn() {
 
         try {
           const userDocRef = doc(db, "users", user.email.toLowerCase());
-          const userDocSnap = await getDoc(userDocRef);
-          const allOrders = userDocSnap.exists() ? userDocSnap.data().allOrders || [] : [];
+          const ordersColRef = collection(userDocRef, "newOrders");
 
           // Check for duplicate orderReference
-          const alreadyExists = allOrders.some(
-            (order) => order.orderReference === newOrder.orderReference
+          const querySnapshot = await getDocs(ordersColRef);
+          const alreadyExists = querySnapshot.docs.some(
+            (doc) => doc.data().orderReference === newOrder.orderReference
           );
 
           if (!alreadyExists) {
-            await updateDoc(userDocRef, {
-              allOrders: arrayUnion(newOrder)
-            });
-            console.log("Order added to allOrders array!");
+            await addDoc(ordersColRef, newOrder);
+            console.log("Order added to newOrders subcollection!");
           } else {
             console.log("Order with this reference already exists, not adding duplicate.");
           }
         } catch (err) {
-          console.error("Failed to add order to allOrders array:", err);
+          console.error("Failed to add order to newOrders subcollection:", err);
         }
       }
     });

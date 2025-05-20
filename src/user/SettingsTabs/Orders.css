@@ -1,3 +1,10 @@
+/* Import Poppins font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body, .orders-container, .order-item, .order-dropdown-btn, .order-info, .order-details, .orders-title, .order-products-list, .order-summary-list {
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+}
+
 .orders-container {
   display: flex;
   flex-direction: column;
@@ -41,9 +48,7 @@ ul.orders-list {
   text-align: left;
 }
 
-
 .order-info {
-
   width: 100%;
   text-align: left;
   margin-bottom: 6px;
