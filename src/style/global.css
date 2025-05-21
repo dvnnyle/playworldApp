@@ -69,8 +69,3 @@ body {
 
 
 
-@media (max-width: 768px) {
-  .home-wrapper {
-    padding-bottom: 120px; /* more space on tablets and mobiles */
-  }
-}

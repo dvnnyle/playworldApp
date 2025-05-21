@@ -43,7 +43,8 @@ export default function Tickets() {
   // Clean up intervals on unmount
   useEffect(() => {
     return () => {
-      Object.values(intervalsRef.current).forEach(clearInterval);
+      const intervals = intervalsRef.current;
+      Object.values(intervals).forEach(clearInterval);
     };
   }, []);
 

@@ -138,6 +138,24 @@ const userDocRef = doc(db, "users", user.email.toLowerCase());          const do
         </div>
         <div
           className="profile-card-button"
+          onClick={() => {
+            window.navigator.vibrate?.(10);
+            // Add your navigation or action here, e.g. navigate("/kundeservice");
+          }}
+          tabIndex={0}
+          role="button"
+          onKeyPress={e => {
+            if (e.key === "Enter" || e.key === " ") {
+              window.navigator.vibrate?.(10);
+              // Add your navigation or action here, e.g. navigate("/kundeservice");
+            }
+          }}
+        >
+          <div className="emoji-square">💬</div>
+          <h3>KUNDESERVICE</h3>
+        </div>
+        <div
+          className="profile-card-button"
           style={{ cursor: "pointer" }}
           onClick={() => {
             window.navigator.vibrate?.(10);
@@ -155,9 +173,8 @@ const userDocRef = doc(db, "users", user.email.toLowerCase());          const do
           <div className="emoji-square">⭐</div>
           <h3>INNSTILLINGER</h3>
         </div>
-        {/* New card button below */}
 
-        <hr style={{ width: "90%", margin: "20px auto" }} />
+        <hr style={{ width: "50%", margin: "10px auto" }} />
 
         <button
           className="logout-btn"

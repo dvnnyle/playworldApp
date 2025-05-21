@@ -1,0 +1,72 @@
+.support-container {
+  max-width: 500px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px #0001;
+  padding: 32px 24px;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+.support-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.support-desc {
+  margin-bottom: 24px;
+  color: #444;
+}
+
+.support-form label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.support-form textarea {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 12px;
+  font-size: 1rem;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+.support-submit-btn {
+  background: #212121;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.support-submit-btn:hover {
+  background: #444;
+}
+
+.support-success {
+  background: #e7ffe7;
+  border: 1px solid #b2ffb2;
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 18px;
+  color: #1a7f1a;
+}
+
+.support-contact-info {
+  margin-top: 32px;
+  font-size: 1rem;
+}
+
+.support-contact-info h3 {
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}

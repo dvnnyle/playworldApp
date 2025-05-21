@@ -18,7 +18,7 @@ import NewsForm from "./pages/News/NewsForm";
 import Settings from "./user/SettingsTabs/Settings";
 import Tickets from "./TicketSystem/Tickets";
 import Orders from "./user/SettingsTabs/Orders";
-
+import Support from "./user/SettingsTabs/Support";
 
 import PageTransition from "./comp/PageTransition";
 
@@ -154,6 +154,14 @@ function AnimatedRoutes() {
           element={
             <PageTransition>
               <Orders />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/support"
+          element={
+            <PageTransition>
+              <Support />
             </PageTransition>
           }
         />

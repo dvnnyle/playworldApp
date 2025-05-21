@@ -3,6 +3,7 @@ import { db } from "../firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import "./Products.css";
+import { color } from "framer-motion";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -187,9 +188,9 @@ export default function Products() {
         ))}
       </div>
 
-      <div className="logo-div">
-        <img src={require('../assets/logo.png')} alt="Logo" className="logo-image" />
-      </div>
+<div className="logo-div" style={{ color: "white" }}>
+  <h3>HAR DU HUSKET ALT?</h3>
+</div>
 
       {/* Only show summary if any product quantity > 0 */}
       {totalQuantity > 0 && (
