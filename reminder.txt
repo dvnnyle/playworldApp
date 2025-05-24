@@ -1,0 +1,17 @@
+bytt backend url på Vipps, myCart
+
+on Deploy#
+run commands
+"start": "node server.jsx",
+    "build": "react-scripts build && node obfuscate-build.js"
+
+
+   #Lokalt 
+"start": "react-scripts start",
+    "build": "react-scripts build"
+
+
+
+    on Deploy
+
+    tar sirka 10min
