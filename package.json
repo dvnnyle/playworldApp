@@ -24,8 +24,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "node server.jsx",
-    "build": "react-scripts build && node obfuscate-build.js"
+    "start": "react-scripts start",
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
@@ -46,7 +46,6 @@
     ]
   },
   "devDependencies": {
-    "javascript-obfuscator": "^4.1.1",
     "serve": "^14.2.4"
   }
 }

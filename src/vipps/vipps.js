@@ -1,7 +1,7 @@
 // vipps.js
-//const BACKEND_URL = '';  // empty string means "same origin"
+const BACKEND_URL = '';  // empty string means "same origin"
 
-const BACKEND_URL = 'http://localhost:4000'; // your backend URL
+//const BACKEND_URL = 'http://localhost:4000'; // your backend URL
 
 export async function createVippsPayment(paymentData) {
   const response = await fetch(`${BACKEND_URL}/create-payment`, {
