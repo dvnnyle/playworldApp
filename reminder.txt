@@ -14,4 +14,6 @@ run commands
 
     on Deploy
 
+    run build localt først så push til github
+
     tar sirka 10min
