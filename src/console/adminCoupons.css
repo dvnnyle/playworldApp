@@ -1,0 +1,288 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+html, body, #root {
+  font-family: 'Poppins'!important;
+}
+
+.admin-coupons-container {
+  max-width: 100vw;
+  margin: 40px 0;
+  margin-top: 0px;
+  padding: 0 0;
+  margin-bottom: 110px;
+    font-family: 'Poppins'!important;
+}
+
+.admin-coupons-title {
+  margin-bottom: 16px;
+  font-size: 2rem;
+  color: #212121;
+  text-align: center;
+}
+
+.admin-coupons-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-coupons-input {
+  margin-bottom: 16px;
+  border-radius: 25px;
+  height: 40px;
+  padding-left: 16px;
+  padding-right: 16px;
+    border: 1px solid #222;
+}
+
+.admin-coupons-button {
+  background: #212121;
+  color: #fff;
+  border: none;
+  border-radius: 25px !important;
+  height: 40px;
+  padding: 0 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+    font-family: 'Poppins'!important;
+}
+
+
+.admin-coupons-list-title {
+  font-size: 1.3rem;
+  color: #ffffff;
+  text-align: center;
+  width: 100%;
+}
+
+.admin-coupons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* More space between bigger cards */
+  width: calc(100vw - 20px);
+  margin: 0 auto;
+
+}
+
+.admin-coupon-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: white;
+  border-radius: px;
+  padding: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+  margin: 0;
+    border-radius: 25px;
+
+}
+
+.admin-coupon-emoji {
+  font-size: 4rem;
+  margin-right: 0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  width: 120px;
+  background: #c9800a;
+  border-radius: 20px;
+  box-shadow: none;
+}
+
+.admin-coupon-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 0;         /* Ensure no top margin */
+}
+
+.admin-coupon-description {
+  color: #555;
+  font-size: 14px;
+}
+
+
+.admin-coupon-text {
+  margin-left: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+}
+
+
+
+.admin-coupon-expiration {
+  font-size: 12.8px;
+  color: #999;
+  margin-top: 2px;
+  font-style: italic;
+  letter-spacing: 0.2px;
+}
+
+.admin-coupon-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ff4d4f;
+  border: none;
+  color: white;
+  font-size: 12px;
+  font-weight:bolder;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  line-height: 20px;
+  text-align: center;
+
+
+}
+
+.admin-coupon-label {
+  font-size: 14px;
+  color: #00d9ff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;      /* Remove bottom margin */
+  font-weight: bold;
+    font-family: 'Poppins'!important;
+
+}
+
+
+
+.coupon-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+}
+
+.coupon-modal {
+  width: 100%;
+  max-width: calc(100vw - 20px);
+  margin: 20px 10px;
+  background: #fff;
+  border-radius: 25px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 120px;
+
+}
+
+
+.coupon-modal {
+  /* ...existing styles... */
+  animation: modalFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.coupon-modal-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.coupon-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #b89c2c;
+  cursor: pointer;
+}
+
+.coupon-modal-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.coupon-modal-description {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.coupon-modal-expiration {
+  font-size: 0.95rem;
+  color: #999;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.coupon-modal-use {
+  background: #b89c2c;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.coupon-counter-card {
+  max-width: 100%;
+  width: calc(100% - 60px); /* 100% width minus 10px on each side */
+  margin: 10px auto; /* horizontally center it */
+  background: #ffffff;
+  border-radius: 25px;
+  box-shadow: 0 1px 6px rgba(184, 156, 44, 0.07);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+.coupon-counter-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #212121;
+}
+
+
+
+.coupon-counter-alltime {
+  margin-top: 10px;
+  color: #d21919;
+  font-weight: 600;
+}
+
+
+
+
+@keyframes couponFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.admin-coupon-card {
+  /* ...existing styles... */
+  animation: couponFadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Remove the old modalFadeIn animation if present */
+}

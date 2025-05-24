@@ -4,27 +4,36 @@ import "./PaymentReturn.css";
 import { db, auth } from "../firebase";
 import { doc, collection, addDoc, getDocs } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { captureVippsPayment } from "../vipps/vipps";
 
 export default function PaymentReturn() {
   const [orderReference, setOrderReference] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [buyerName, setBuyerName] = useState("");
-  const [email, setEmail] = useState(""); // Add email state
+  const [email, setEmail] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const [products] = useState([]);
+  const [pspReference, setPspReference] = useState("");
+  const [vippsCaptureResponse, setVippsCaptureResponse] = useState(null);
   const navigate = useNavigate();
 
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  // Load order info from localStorage on mount
   useEffect(() => {
     const storedReference = localStorage.getItem("orderReference");
     const storedPhone = localStorage.getItem("phoneNumber");
     const storedName = localStorage.getItem("buyerName");
-    const storedEmail = localStorage.getItem("email"); // Get email from storage
+    const storedEmail = localStorage.getItem("email");
     const storedCart = localStorage.getItem("cartItems");
 
     if (storedReference) setOrderReference(storedReference);
     if (storedPhone) setPhoneNumber(storedPhone);
     if (storedName) setBuyerName(storedName);
-    if (storedEmail) setEmail(storedEmail); // Set email
+    if (storedEmail) setEmail(storedEmail);
 
     if (storedCart) {
       const parsedCart = JSON.parse(storedCart);
@@ -32,7 +41,7 @@ export default function PaymentReturn() {
 
       const now = new Date().toISOString();
 
-      // Add orderReference and datePurchased to each ticket
+      // Update cart items with orderReference and datePurchased
       const updatedCart = parsedCart.map(item =>
         item.category === "lek" && item.type === "ticket"
           ? { ...item, orderReference: storedReference, datePurchased: now }
@@ -40,7 +49,7 @@ export default function PaymentReturn() {
       );
       localStorage.setItem("cartItems", JSON.stringify(updatedCart));
 
-      // Only add the new order if it doesn't already exist
+      // Store order in localStorage orders array (for offline use)
       const storedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
       const alreadyExists = storedOrders.some(
         o => o.orderReference === storedReference
@@ -63,7 +72,28 @@ export default function PaymentReturn() {
     }
   }, []);
 
+  // Capture Vipps payment and get pspReference
   useEffect(() => {
+    if (orderReference && totalPrice > 0) {
+      captureVippsPayment({ reference: orderReference, amountValue: Math.round(totalPrice * 100) })
+        .then(res => {
+          console.log("Vipps capture response:", res);
+          if (res && res.pspReference) {
+            localStorage.setItem("pspReference", res.pspReference);
+            setPspReference(res.pspReference);
+          }
+          setVippsCaptureResponse(res);
+        })
+        .catch(err => {
+          console.error("Vipps capture failed:", err);
+        });
+    }
+  }, [orderReference, totalPrice]);
+
+  // Save order to Firestore after pspReference is set
+  useEffect(() => {
+    if (!pspReference) return;
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         console.log("Not logged in, skipping Firestore order save.");
@@ -75,6 +105,7 @@ export default function PaymentReturn() {
       const storedName = localStorage.getItem("buyerName");
       const storedEmail = localStorage.getItem("email");
       const storedCart = localStorage.getItem("cartItems");
+      const storedPspReference = pspReference; // Use state, not localStorage
 
       if (storedCart && storedReference) {
         const parsedCart = JSON.parse(storedCart);
@@ -91,13 +122,14 @@ export default function PaymentReturn() {
             (sum, item) => sum + item.price * item.quantity,
             0
           ),
+          pspReference: storedPspReference || "",
+          vippsCaptureResponse: vippsCaptureResponse || null,
         };
 
         try {
           const userDocRef = doc(db, "users", user.email.toLowerCase());
           const ordersColRef = collection(userDocRef, "newOrders");
 
-          // Check for duplicate orderReference
           const querySnapshot = await getDocs(ordersColRef);
           const alreadyExists = querySnapshot.docs.some(
             (doc) => doc.data().orderReference === newOrder.orderReference
@@ -116,14 +148,8 @@ export default function PaymentReturn() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [pspReference, vippsCaptureResponse]);
 
-  const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
-  // Format duration: under 60 = minutes, 60 or more = hours (with decimals)
   function formatDurationFromMinutes(minutes) {
     if (!minutes || minutes <= 0) return "Ukjent varighet";
     if (minutes < 60) return `${minutes} minutter`;
@@ -131,16 +157,13 @@ export default function PaymentReturn() {
     return hours % 1 === 0 ? `${hours} timer` : `${hours.toFixed(1)} timer`;
   }
 
-  // Extract duration in minutes from name if missing
-
   const tickets = cartItems
     .filter((item) => item.category === "lek" && item.type === "ticket")
     .map((item) => {
-      // Find the latest product info
       const product = products.find((p) => p.id === item.productId);
       return {
         ...item,
-        duration: product?.duration ?? item.duration, // prefer latest duration
+        duration: product?.duration ?? item.duration,
       };
     });
 

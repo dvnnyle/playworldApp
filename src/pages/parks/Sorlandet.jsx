@@ -2,12 +2,12 @@ import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import '../../style/global.css';
 import '../../style/Sor.css';
-import pwsImage from '../../assets/Triaden.webp';
+import pwsImage from '../../assets/pws.png';
 import bdImage from '../../assets/bdimage.webp';
 import { FaInstagram, FaFacebookF, FaTiktok, FaGlobe } from 'react-icons/fa';
-import trampoline from '../../assets/trampoline.webp'; 
+import trampoline from '../../assets/trampoline.webp'; // Add this import at the top with your other imports
 
-export default function Triaden() {
+export default function Sor() {
   const navigate = useNavigate();
 
   return (
@@ -21,7 +21,7 @@ export default function Triaden() {
           <FiArrowLeft size={24} />
         </button>
 
-        <h1 className="global-title">TRIADEN</h1>
+        <h1 className="global-title">SØRLANDET</h1>
       </div>
 
       <div className="content-wrapper">

@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const { v4: uuidv4 } = require('uuid'); // At the top of your file
 
 const app = express();
 
@@ -49,29 +50,6 @@ async function getAccessToken() {
   }
 }
 
-// Helper to mask URLs and tokens with friendly messages before logging
-function maskUrlsWithMessage(obj) {
-  const copy = { ...obj };
-
-  if (copy.url) {
-    copy.url = 'Redirect URL hidden for security';
-  }
-  if (copy.redirectUrl) {
-    copy.redirectUrl = 'Redirect URL hidden for security';
-  }
-  if (copy.token) {
-    copy.token = 'Token hidden for security';
-  }
-  if (copy.paymentToken) {
-    copy.paymentToken = 'Token hidden for security';
-  }
-  if (copy.data?.token) {
-    copy.data.token = 'Token hidden for security';
-  }
-
-  return copy;
-}
-
 // API endpoint to create payment
 app.post('/create-payment', async (req, res) => {
   const { amountValue, phoneNumber, reference, returnUrl, paymentDescription } = req.body;
@@ -105,17 +83,18 @@ app.post('/create-payment', async (req, res) => {
       },
     });
 
-    // Mask URLs and tokens with friendly messages before logging
-    const maskedResponseData = maskUrlsWithMessage(response.data);
-    console.log('Vipps payment response:', JSON.stringify(maskedResponseData, null, 2));
+    // Log the full Vipps payment response (no masking)
+    console.log('Vipps payment response:', JSON.stringify(response.data, null, 2));
 
-    let vippsRedirectUrl = response.data.url || response.data.redirectUrl;
+    const vippsResponse = response.data;
+    let vippsRedirectUrl = vippsResponse.url || vippsResponse.redirectUrl;
+    const pspReference = vippsResponse.pspReference;
 
     if (!vippsRedirectUrl) {
       const token =
-        response.data.token ||
-        response.data.paymentToken ||
-        response.data.data?.token ||
+        vippsResponse.token ||
+        vippsResponse.paymentToken ||
+        vippsResponse.data?.token ||
         null;
 
       if (!token) {
@@ -126,14 +105,83 @@ app.post('/create-payment', async (req, res) => {
       vippsRedirectUrl = `https://apitest.vipps.no/dwo-api-application/v1/deeplink/vippsgateway?v=2&token=${token}`;
     }
 
-    // Log the redirect URL as a hidden message instead of actual URL
-    console.log('Vipps redirect URL:', '[Redirect URL hidden for security]');
+    // Log the actual Vipps redirect URL to the terminal
+    console.log('Vipps redirect URL:', vippsRedirectUrl);
 
-    return res.json({ url: vippsRedirectUrl });
+    return res.json({ url: vippsRedirectUrl, reference, pspReference });
   } catch (error) {
     console.error('Error creating Vipps payment:', error.response?.data || error.message);
     return res.status(500).json({
       error: 'Failed to create Vipps payment',
+      details: error.response?.data || error.message,
+    });
+  }
+});
+
+// Capture payment endpoint for Vipps ePayment API (test)
+app.post('/capture-payment', async (req, res) => {
+  const { reference, amountValue } = req.body;
+  try {
+    const accessToken = await getAccessToken();
+    const capturePayload = {
+      modificationAmount: { currency: 'NOK', value: amountValue }
+    };
+    const url = `https://apitest.vipps.no/epayment/v1/payments/${reference}/capture`;
+    const response = await axios.post(
+      url,
+      capturePayload,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY,
+          'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER,
+          'Content-Type': 'application/json',
+          'Idempotency-Key': uuidv4(), // Add this header
+        },
+      }
+    );
+    console.log(`Vipps payment captured for reference: ${reference}, amount: ${amountValue} NOK`);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error capturing Vipps payment:', error.response?.data || error.message);
+    res.status(500).json({
+      error: 'Failed to capture Vipps payment',
+      details: error.response?.data || error.message,
+    });
+  }
+});
+
+// Refund payment endpoint for Vipps ePayment API
+app.post('/refund-payment', async (req, res) => {
+  const { reference, amountValue } = req.body;
+  try {
+    const accessToken = await getAccessToken();
+    const refundPayload = {
+      modificationAmount: { currency: 'NOK', value: amountValue }
+    };
+    const url = `https://apitest.vipps.no/epayment/v1/payments/${reference}/refund`;
+    const response = await axios.post(
+      url,
+      refundPayload,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY,
+          'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER,
+          'Content-Type': 'application/json',
+          'Idempotency-Key': uuidv4(),
+        },
+      }
+    );
+    // Log amount in øre and NOK
+    console.log(
+      `Vipps payment refunded for reference: ${reference}, amount: ${amountValue} øre, conversion: ${(amountValue / 100).toFixed(2)} NOK`
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error refunding Vipps payment:', error.response?.data || error.message);
+    res.status(500).json({
+      error: 'Failed to refund Vipps payment',
       details: error.response?.data || error.message,
     });
   }

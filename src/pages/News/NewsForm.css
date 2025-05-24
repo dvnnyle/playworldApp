@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+html, body, #root {
+  font-family: 'Poppins'!important;
+}
+
 .preview-box {
   width: calc(100% - 20px); /* Full width minus 10px left + 10px right */
   margin: 1rem 10px 0 10px; /* 10px margin left and right */
@@ -9,6 +15,9 @@
   border-radius: 25px;
   padding: 10px;
   background-color: #f9f9f9;
+  margin-top: 10px;
+      font-family: 'Poppins'!important;
+
   
 }
 
@@ -145,6 +154,8 @@ padding: 10px 0;
 .modal-content small,
 .modal-content .location {
   text-align: left;
+      font-family: 'Poppins'!important;
+
 }
 
 
@@ -163,7 +174,6 @@ padding: 10px 0;
   line-height: 20px;
   text-align: center;
   padding: 0;
-  transition: background-color 0.3s ease;
   z-index: 10;
 }
 
@@ -190,11 +200,14 @@ padding: 10px 0;
 
 
 .news-form textarea {
-  margin-bottom: 16px; /* Adjust as needed */
+  margin-bottom: 16px;
   border-radius: 25px;
-        padding: 16px; /* Add this line to move text right */
+  padding: 16px;
   border: 1px solid #222;
-
+  min-height: 160px;
+  width: 100%;      /* Add this line for fixed width */
+  max-width: 100%;   /* Prevent overflow on small screens */
+  box-sizing: border-box;
 }
 
 
@@ -210,6 +223,7 @@ padding: 10px 0;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
+  
 }
 
 
@@ -248,16 +262,35 @@ body.news-page-body,
 @media (max-width: 600px) {
   body.news-page-body,
   .news-form-page-body {
-    padding-bottom: 120px; /* Even more space for mobile if needed */
+    padding-bottom: 110px; /* Even more space for mobile if needed */
   }
 }
 
 .posts-list {
-  padding-bottom: 120px;
+  padding-bottom: 110px;
 }
 
 @media (max-width: 600px) {
   .posts-list {
-    padding-bottom: 120px;
+    padding-bottom: 110px;
   }
+}
+
+
+@keyframes previewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.preview-box {
+  /* ...existing styles... */
+  animation: couponFadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1);
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, setDoc } from "firebase/firestore";
 import { FaUserCircle } from "react-icons/fa";
 import "./Profile.css";
 import '../style/global.css';
@@ -17,7 +17,7 @@ export default function Profile() {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-const userDocRef = doc(db, "users", user.email.toLowerCase());          const docSnap = await getDoc(userDocRef);
+          const userDocRef = doc(db, "users", user.email.toLowerCase());          const docSnap = await getDoc(userDocRef);
 
           if (docSnap.exists()) {
             setUserData(docSnap.data());
@@ -36,6 +36,27 @@ const userDocRef = doc(db, "users", user.email.toLowerCase());          const do
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const syncCoupons = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const globalCouponsSnap = await getDocs(collection(db, "myCouponsFb"));
+      const userCouponsRef = collection(db, "users", user.email.toLowerCase(), "coupons");
+      const userCouponsSnap = await getDocs(userCouponsRef);
+      const userCouponIds = userCouponsSnap.docs.map(doc => doc.id);
+
+      for (const couponDoc of globalCouponsSnap.docs) {
+        if (!userCouponIds.includes(couponDoc.id)) {
+          await setDoc(doc(userCouponsRef, couponDoc.id), {
+            ...couponDoc.data(),
+            used: false,
+          });
+        }
+      }
+    };
+    syncCoupons();
+  }, []);
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -44,6 +65,12 @@ const userDocRef = doc(db, "users", user.email.toLowerCase());          const do
       alert("Logout failed: " + err.message);
     }
   };
+
+  useEffect(() => {
+    if (error === "No logged in user.") {
+      navigate("/login");
+    }
+  }, [error, navigate]);
 
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p>{error}</p>;
@@ -108,11 +135,15 @@ const userDocRef = doc(db, "users", user.email.toLowerCase());          const do
           className="profile-card-button"
           onClick={() => {
             window.navigator.vibrate?.(10);
+            navigate("/koupons");
           }}
           tabIndex={0}
           role="button"
           onKeyPress={e => {
-            if (e.key === "Enter" || e.key === " ") window.navigator.vibrate?.(10);
+            if (e.key === "Enter" || e.key === " ") {
+              window.navigator.vibrate?.(10);
+              navigate("/koupons");
+            }
           }}
         >
           <div className="emoji-square">🎉</div>
@@ -140,14 +171,14 @@ const userDocRef = doc(db, "users", user.email.toLowerCase());          const do
           className="profile-card-button"
           onClick={() => {
             window.navigator.vibrate?.(10);
-            // Add your navigation or action here, e.g. navigate("/kundeservice");
-          }}
+    window.navigator.vibrate?.(10);
+              navigate("/Support");          }}
           tabIndex={0}
           role="button"
           onKeyPress={e => {
             if (e.key === "Enter" || e.key === " ") {
               window.navigator.vibrate?.(10);
-              // Add your navigation or action here, e.g. navigate("/kundeservice");
+              navigate("/Support");          
             }
           }}
         >

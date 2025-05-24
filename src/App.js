@@ -5,7 +5,8 @@ import { AnimatePresence } from "framer-motion";
 import Navbar from "./comp/Navbar";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Sor from "./pages/parks/Sor";
+import Sorlandet from "./pages/parks/Sorlandet.jsx";
+import Triaden from "./pages/parks/Triaden.jsx";
 import BookingPage from "./pages/BookingPage";
 import Products from "./shop/Products";
 import CreateUser from "./user/CreateUser";
@@ -17,8 +18,14 @@ import News from "./pages/News/News.jsx";
 import NewsForm from "./pages/News/NewsForm";
 import Settings from "./user/SettingsTabs/Settings";
 import Tickets from "./TicketSystem/Tickets";
-import Orders from "./user/SettingsTabs/Orders";
 import Support from "./user/SettingsTabs/Support";
+import Orders from "./user/SettingsTabs/Orders"; // <-- Add this line
+import Koupons from "./user/SettingsTabs/koupons"; // Add this import
+
+import Admin from "./console/admin";
+import CustomerOrderList from "./console/CustomerOrderList";
+import AdminCoupons from "./console/adminCoupons"; // Add this import
+import AdminLogin from "./console/adminLogin"; // Add this import
 
 import PageTransition from "./comp/PageTransition";
 
@@ -53,11 +60,22 @@ function AnimatedRoutes() {
             </PageTransition>
           }
         />
+
+
         <Route
           path="/News"
           element={
             <PageTransition>
               <News />
+            </PageTransition>
+          }
+        />
+        {/* Add the login page route below */}
+        <Route
+          path="/adminlogin"
+          element={
+            <PageTransition>
+              <AdminLogin />
             </PageTransition>
           }
         />
@@ -78,10 +96,18 @@ function AnimatedRoutes() {
           }
         />
         <Route
-          path="/sor"
+          path="/sorlandet"
           element={
             <PageTransition>
-              <Sor />
+              <Sorlandet />
+            </PageTransition>
+          }
+        />
+              <Route
+          path="/triaden"
+          element={
+            <PageTransition>
+              <Triaden />
             </PageTransition>
           }
         />
@@ -162,6 +188,38 @@ function AnimatedRoutes() {
           element={
             <PageTransition>
               <Support />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/koupons"
+          element={
+            <PageTransition>
+              <Koupons />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/customer-orders/:userId"
+          element={
+            <PageTransition>
+              <CustomerOrderList />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <PageTransition>
+              <Admin />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/admincoupons"
+          element={
+            <PageTransition>
+              <AdminCoupons />
             </PageTransition>
           }
         />

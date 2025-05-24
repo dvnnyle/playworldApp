@@ -3,7 +3,6 @@ import { db } from "../firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import "./Products.css";
-import { color } from "framer-motion";
 
 export default function Products() {
   const [products, setProducts] = useState([]);

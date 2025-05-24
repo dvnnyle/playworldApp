@@ -30,6 +30,23 @@
   padding: 10px;
 }
 
+@keyframes product-cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.product-card {
+  /* ...existing styles... */
+  animation: couponFadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
 .product-image {
   width: 120px;
   height: 90px;
@@ -187,7 +204,7 @@ body.products-page-body {
 
 @media (max-width: 900px) {
   .products-wrapper {
-    margin-bottom: 110px;
+    margin-bottom: 85px;
   }
 }
 @media (min-width: 901px) {

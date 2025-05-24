@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import '../style/global.css';
 import '../style/Home.css';
 import pwsImage from '../assets/pws.png';
+import triImage from '../assets/Triaden.webp';
+
 
 function ProfileCardButton({ emoji, label, to, vibrate = 10 }) {
   const navigate = useNavigate();
@@ -41,11 +43,19 @@ export default function Home() {
       <div className="park-section">
         <div 
           className="rectangle-card" 
-          onClick={() => navigate('/sor')} 
+          onClick={() => {
+            window.navigator.vibrate?.(10);
+            navigate('/Sorlandet');
+          }} 
           style={{ cursor: 'pointer' }}
           role="button" 
           tabIndex={0}
-          onKeyPress={(e) => { if (e.key === 'Enter') navigate('/sor') }}
+          onKeyPress={(e) => { 
+            if (e.key === 'Enter') {
+              window.navigator.vibrate?.(10);
+              navigate('/Sorlandet');
+            }
+          }}
         >
           <img 
             src={pwsImage} 
@@ -68,14 +78,22 @@ export default function Home() {
 
         <div 
           className="rectangle-card" 
-          onClick={() => navigate('/triaden')} 
+          onClick={() => {
+            window.navigator.vibrate?.(10);
+            navigate('/triaden');
+          }} 
           style={{ cursor: 'pointer' }}
           role="button" 
           tabIndex={0}
-          onKeyPress={(e) => { if (e.key === 'Enter') navigate('/triaden') }}
+          onKeyPress={(e) => { 
+            if (e.key === 'Enter') {
+              window.navigator.vibrate?.(10);
+              navigate('/triaden');
+            }
+          }}
         >
           <img 
-            src={pwsImage} 
+            src={triImage} 
             alt="PWS building" 
             className="rectangle-image" 
             draggable={false}
@@ -97,7 +115,7 @@ export default function Home() {
       {/* Profile-style card buttons on Home page */}
       <hr style={{ width: "50%", margin: "20px auto 10px auto" }} />
       <div className="home-cards-wrapper" style={{ marginTop: 20 }}>
-        <ProfileCardButton emoji="💬" label="KUNDESERVICE" to="/kunderivce" vibrate={20} />
+        <ProfileCardButton emoji="💬" label="KUNDESERVICE" to="/support" vibrate={20} />
       </div>
     </div>
   );
