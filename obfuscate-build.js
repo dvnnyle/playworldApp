@@ -4,7 +4,6 @@ const path = require('path');
 
 const buildJsDir = path.join(__dirname, 'build', 'static', 'js');
 
-// Get all JS files in the build/static/js folder
 const jsFiles = fs.readdirSync(buildJsDir).filter(file => file.endsWith('.js'));
 
 jsFiles.forEach(file => {
