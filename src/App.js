@@ -26,6 +26,7 @@ import Admin from "./console/admin";
 import CustomerOrderList from "./console/CustomerOrderList";
 import AdminCoupons from "./console/adminCoupons"; // Add this import
 import AdminLogin from "./console/adminLogin"; // Add this import
+import Prompter, { usePwaPrompt } from "./comp/prompter"; // <-- Import your modal
 
 import PageTransition from "./comp/PageTransition";
 
@@ -229,9 +230,13 @@ function AnimatedRoutes() {
 }
 
 function App() {
+  const { showPrompt, handleInstall, handleClose } = usePwaPrompt();
+
   return (
     <Router>
       <Navbar />
+      <Prompter show={showPrompt} onInstall={handleInstall} onClose={handleClose} />
+      
       <AnimatedRoutes />
     </Router>
   );

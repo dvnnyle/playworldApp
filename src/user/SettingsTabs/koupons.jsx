@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { auth, db } from "../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { FiArrowLeft } from 'react-icons/fi';
@@ -10,6 +10,7 @@ import {
   setDoc,
   updateDoc,
   increment,
+  addDoc,
 } from "firebase/firestore";
 import { FaGift } from "react-icons/fa";
 
@@ -103,6 +104,27 @@ export default function Koupons() {
     return () => unsub && unsub();
   }, []);
 
+  const markCouponAsUsed = useCallback(async (couponId) => {
+    const coupon = userCoupons.find(c => c.id === couponId);
+    const isUnlimited = coupon && (coupon.unlimited || coupon.expiration === null);
+
+    // Only mark as used for limited coupons
+    if (!isUnlimited) {
+      setUsedCoupons(prev => ({ ...prev, [couponId]: true }));
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "users", user.email.toLowerCase(), "coupons", couponId);
+        await updateDoc(userRef, { used: true });
+      }
+    }
+
+    setTimerActive(false);
+    setActiveCouponId(null);
+    setModalCoupon(null);
+    setTimeLeft(60);
+    localStorage.removeItem("activeCouponTimer");
+  }, [userCoupons]);
+
   useEffect(() => {
     const timerData = localStorage.getItem("activeCouponTimer");
     if (timerData) {
@@ -116,7 +138,7 @@ export default function Koupons() {
         markCouponAsUsed(id);
       }
     }
-  }, []);
+  }, [markCouponAsUsed]);
 
   // Timer effect
   useEffect(() => {
@@ -130,7 +152,7 @@ export default function Koupons() {
       }, 1000);
       return () => clearInterval(timer);
     }
-  }, [timerActive, timeLeft, activeCouponId]);
+  }, [timerActive, timeLeft, activeCouponId, markCouponAsUsed]);
 
   function formatDate(dateStr) {
     if (!dateStr) return "";
@@ -144,26 +166,23 @@ export default function Koupons() {
     return `${m}:${s}`;
   }
 
-  async function markCouponAsUsed(couponId) {
-    setUsedCoupons(prev => ({ ...prev, [couponId]: true }));
-    setTimerActive(false);
-    setActiveCouponId(null);
-    setModalCoupon(null);
-    setTimeLeft(60);
-    localStorage.removeItem("activeCouponTimer");
-
-    const user = auth.currentUser;
-    if (user) {
-      const userRef = doc(db, "users", user.email.toLowerCase(), "coupons", couponId);
-      await updateDoc(userRef, { used: true });
-
-      const totalRef = doc(db, "TotalCouponsUsed", "used");
-      await updateDoc(totalRef, { total: increment(1) });
-    }
-  }
-
   async function handleUse() {
     if (!timerActive && modalCoupon) {
+      // Track usage for statistics immediately on click
+      const user = auth.currentUser;
+      if (user) {
+        await addDoc(
+          collection(db, "myCouponsFb", modalCoupon.id, "couponsUsed"),
+          {
+            user: user.email.toLowerCase(),
+            usedAt: new Date().toISOString(),
+          }
+        );
+        const totalRef = doc(db, "TotalCouponsUsed", "used");
+        await updateDoc(totalRef, { total: increment(1) });
+      }
+
+      // Start timer as before
       const endTime = Date.now() + 15 * 1000;
       setActiveCouponId(modalCoupon.id);
       setTimerActive(true);
@@ -176,11 +195,12 @@ export default function Koupons() {
   }
 
   function handleCardClick(coupon, idx) {
+    if (navigator.vibrate) navigator.vibrate(30); // Vibrate on every click (if supported)
+    const isUnlimited = coupon.unlimited || coupon.expiration === null;
     if (
-      !usedCoupons[coupon.id] &&
+      (isUnlimited || !usedCoupons[coupon.id]) &&
       (!timerActive || activeCouponId === coupon.id)
     ) {
-      if (navigator.vibrate) navigator.vibrate(30);
       setModalCoupon({ ...coupon, idx });
     }
   }
@@ -211,43 +231,51 @@ export default function Koupons() {
                 Ingen kuponger tilgjengelig.
               </div>
             )}
-            {userCoupons.map((coupon, idx) => (
-              <div
-                className="admin-coupon-card"
-                key={coupon.id}
-                onClick={() => handleCardClick(coupon, idx)}
-                style={{
-                  position: "relative",
-                  opacity: usedCoupons[coupon.id] ? 0.5 : 1,
-                  pointerEvents:
-                    usedCoupons[coupon.id] ||
-                    (timerActive && activeCouponId !== coupon.id)
-                      ? "none"
-                      : "auto",
-                  cursor:
-                    usedCoupons[coupon.id] ||
-                    (timerActive && activeCouponId !== coupon.id)
-                      ? "default"
-                      : "pointer",
-                }}
-              >
-                <div className="admin-coupon-emoji">🎫</div>
-                <div className="admin-coupon-text">
-                  <div className="admin-coupon-label">
-                    <FaGift style={{ marginRight: 4 }} /> Kupong
+            {userCoupons.map((coupon, idx) => {
+              const isUnlimited = coupon.unlimited || coupon.expiration === null;
+              const isUsed = usedCoupons[coupon.id];
+              const isOtherTimerActive = timerActive && activeCouponId !== coupon.id;
+
+              return (
+                <div
+                  className="admin-coupon-card"
+                  key={coupon.id}
+                  onClick={() => handleCardClick(coupon, idx)}
+                  draggable={false}
+                  onDragStart={e => e.preventDefault()}
+                  style={{
+                    position: "relative",
+                    opacity: !isUnlimited && isUsed ? 0.5 : 1,
+                    pointerEvents:
+                      (!isUnlimited && isUsed) || (isOtherTimerActive && !isUnlimited)
+                        ? "none"
+                        : "auto",
+                    cursor:
+                      (!isUnlimited && isUsed) || (isOtherTimerActive && !isUnlimited)
+                        ? "default"
+                        : "pointer",
+                  }}
+                >
+                  <div className="admin-coupon-emoji">🎫</div>
+                                  <div className="admin-coupon-separator"></div> {/* <-- Add this */}
+
+                  <div className="admin-coupon-text">
+                    <div className="admin-coupon-label">
+                      <FaGift style={{ marginRight: 4 }} /> Kupong
+                    </div>
+                    <div className="admin-coupon-title">{coupon.title}</div>
+                    <div className="admin-coupon-description">
+                      {coupon.description}
+                    </div>
+                    {coupon.expiration && (
+                      <span className="admin-coupon-expiration">
+                        Utløper: {formatDate(coupon.expiration)}
+                      </span>
+                    )}
                   </div>
-                  <div className="admin-coupon-title">{coupon.title}</div>
-                  <div className="admin-coupon-description">
-                    {coupon.description}
-                  </div>
-                  {coupon.expiration && (
-                    <span className="admin-coupon-expiration">
-                      Utløper: {formatDate(coupon.expiration)}
-                    </span>
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -260,7 +288,10 @@ export default function Koupons() {
                 </span>
                 <button
                   className="coupon-modal-close"
-                  onClick={() => setModalCoupon(null)}
+                  onClick={() => {
+                    if (navigator.vibrate) navigator.vibrate(30);
+                    setModalCoupon(null);
+                  }}
                 >
                   ✕
                 </button>
@@ -279,8 +310,14 @@ export default function Koupons() {
                   Utløper om: {formatTimer(timeLeft)}
                 </div>
               ) : (
-                !usedCoupons[modalCoupon.id] && (
-                  <button className="coupon-modal-use" onClick={handleUse}>
+                (!usedCoupons[modalCoupon.id] || modalCoupon.unlimited || modalCoupon.expiration === null) && (
+                  <button
+                    className="coupon-modal-use"
+                    onClick={() => {
+                      if (navigator.vibrate) navigator.vibrate(30);
+                      handleUse();
+                    }}
+                  >
                     Bruk kupong
                   </button>
                 )

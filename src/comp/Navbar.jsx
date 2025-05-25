@@ -11,7 +11,7 @@ import "./Navbar.css";
 export default function Navbar() {
   // Helper for haptic feedback
   const vibrate = () => {
-    if (navigator.vibrate) navigator.vibrate(30);
+    if (navigator.vibrate) navigator.vibrate(40);
   };
 
   return (

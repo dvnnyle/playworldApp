@@ -162,7 +162,7 @@ export default function Sor() {
             className="tickets-btn"
             onClick={() => navigate('/products')}
           >
-            Biletter
+            BILETTER
           </button>
         </div>
 

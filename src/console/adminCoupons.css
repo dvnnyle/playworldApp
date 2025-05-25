@@ -12,18 +12,24 @@ html, body, #root {
   margin-bottom: 110px;
     font-family: 'Poppins'!important;
 }
-
 .admin-coupons-title {
-  margin-bottom: 16px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   font-size: 2rem;
-  color: #212121;
+  color: #ffffff;
   text-align: center;
+  background-color: #fc8c0b;
+  width: calc(100% - 20px); /* 10px space on each side */
+  padding: 16px 0;
+  border-radius: 25px;
+  box-sizing: border-box;
+  margin-left: 10px;
+  margin-right: 10px;
 }
-
 .admin-coupons-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  padding: 10px;
 }
 
 .admin-coupons-input {
@@ -88,15 +94,24 @@ html, body, #root {
   justify-content: center;
   height: 120px;
   width: 120px;
-  background: #c9800a;
+  background: #fc8c0b;
   border-radius: 20px;
   box-shadow: none;
+}
+
+.admin-coupon-separator {
+  width: 1.5px;
+  height: 85px;
+  background: #eeeeee;
+  margin: 0 18px;
+  border-radius: 2px;
+  align-self: center;
 }
 
 .admin-coupon-title {
   font-weight: bold;
   font-size: 1.1rem;
-  margin-top: 0;         /* Ensure no top margin */
+  margin-top: 0;   
 }
 
 .admin-coupon-description {
@@ -106,7 +121,7 @@ html, body, #root {
 
 
 .admin-coupon-text {
-  margin-left: 20px;
+  margin-left: 0px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -263,8 +278,31 @@ html, body, #root {
   margin-top: 10px;
   color: #d21919;
   font-weight: 600;
+  font-size: 20px;
 }
 
+/* Style for the unlimited checkbox label and input to match the form */
+.admin-coupons-form label {
+    margin-top: 0 !important;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  color: #212121;
+  cursor: pointer;
+
+
+}
+
+.admin-coupons-form input[type="checkbox"] {
+  accent-color: #272727;
+  width: 30px;
+  height: 30px;
+  border-radius: 25px !important;
+  cursor: pointer;
+  vertical-align: middle; /* Helps in some cases */
+  position: relative;
+  top: 5px; /* Adjust this value as needed */
+}
 
 
 
@@ -285,4 +323,13 @@ html, body, #root {
   /* ...existing styles... */
   animation: couponFadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1);
   /* Remove the old modalFadeIn animation if present */
+}
+
+
+.admin-coupon-card {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE10+/Edge */
+  user-select: none;         /* Standard */
+  -webkit-tap-highlight-color: transparent; /* Remove blue highlight on mobile */
 }

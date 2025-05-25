@@ -12,6 +12,7 @@ function AdminCoupons() {
     title: "",
     description: "",
     expiration: "",
+    unlimited: false,
   });
   const [modalCoupon, setModalCoupon] = useState(null);
   const [timerActive, setTimerActive] = useState(false);
@@ -89,17 +90,27 @@ function AdminCoupons() {
   }, [timerActive, timeLeft]);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, checked } = e.target;
+    if (name === "unlimited") {
+      setForm({
+        ...form,
+        unlimited: checked,
+        expiration: checked ? "" : form.expiration,
+      });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.title || !form.description || !form.expiration) return;
+    if (!form.title || !form.description || (!form.expiration && !form.unlimited)) return;
 
     const newCoupon = {
       ...form,
       category: "coupons",
       createdAt: serverTimestamp(),
+      expiration: form.unlimited ? null : form.expiration,
     };
 
     // Use the title as the document ID (replace spaces with underscores for safety)
@@ -111,11 +122,11 @@ function AdminCoupons() {
       ...coupons,
       { ...newCoupon, id: couponId, dateMade: new Date().toISOString() },
     ]);
-    setForm({ title: "", description: "", expiration: "" });
+    setForm({ title: "", description: "", expiration: "", unlimited: false });
   };
 
   const formatDate = (dateStr) => {
-    if (!dateStr) return "";
+    if (!dateStr) return "Ingen utløpsdato";
     const [year, month, day] = dateStr.split("-");
     return `${day}.${month}.${year}`;
   };
@@ -128,21 +139,15 @@ function AdminCoupons() {
     return `${m}:${s}`;
   }
 
-  // Calculate session coupons used
-
   return (
     <>
       <AdminNavBar />
-           <div className="admin-top-card">
+      <div className="admin-top-card">
         <h1 className="admin-top-card-title">Adminpanel</h1>
-
       </div>
       <div className="admin-coupons-container">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        </div>
         <form onSubmit={handleSubmit} className="admin-coupons-form">
-                    <h2 className="admin-coupons-title">Opprett en kupong</h2>
-
+          <h2 className="admin-coupons-title">Opprett en kupong</h2>
           <input
             name="title"
             placeholder="Kupongtittel"
@@ -164,7 +169,18 @@ function AdminCoupons() {
             value={form.expiration}
             onChange={handleChange}
             className="admin-coupons-input"
+            disabled={form.unlimited}
           />
+          <label style={{ marginTop: 10 }}>
+            <input
+              type="checkbox"
+              name="unlimited"
+              checked={form.unlimited}
+              onChange={handleChange}
+              style={{ marginRight: 8 }}
+            />
+            Ubegrenset bruk (ingen utløpsdato)
+          </label>
           <button type="submit" className="admin-coupons-button">
             Legg til kupong
           </button>
@@ -174,6 +190,13 @@ function AdminCoupons() {
           <div className="coupon-counter-title">Kupongstatistikk</div>
           <div className="coupon-counter-alltime">
             Totalt brukte: {allTimeCouponsUsed}
+          </div>
+          <div style={{ marginTop: 10 }}>
+            {coupons.map((coupon) => (
+              <div key={coupon.id} style={{ color: "#b89c2c", fontWeight: 600, fontSize: "1rem" }}>
+                {coupon.title}: {couponsUsedMap[coupon.id] || 0} personer
+              </div>
+            ))}
           </div>
         </div>
         <hr style={{ width: "50%", marginTop: "30px"}} />
@@ -192,24 +215,18 @@ function AdminCoupons() {
                   e.stopPropagation();
                   const couponId = coupon.id;
 
-                  // 1. Delete from global coupons
                   await deleteDoc(doc(db, "myCouponsFb", couponId));
 
-                  // 2. Delete from every user's coupons subcollection
-                  const usersSnap = await getDocs(collection(db, "users"));
-                  for (const userDoc of usersSnap.docs) {
-                    const userEmail = userDoc.id;
-                    const userCouponRef = doc(db, "users", userEmail, "coupons", couponId);
-                    await deleteDoc(userCouponRef);
-                  }
-
                   setCoupons(coupons.filter((c) => c.id !== couponId));
+                  // Do NOT update couponsUsedMap or the statistics display here
                 }}
                 aria-label="Slett kupong"
               >
                 ✕
               </button>
               <div className="admin-coupon-emoji">🎫</div>
+                <div className="admin-coupon-separator"></div> {/* <-- Add this */}
+
               <div className="admin-coupon-text">
                 <div className="admin-coupon-label">
                   <FaGift style={{ marginRight: 4 }} /> KUPONG
@@ -218,17 +235,13 @@ function AdminCoupons() {
                 <div className="admin-coupon-description">
                   {coupon.description}
                 </div>
-                {coupon.expiration &&
-                  coupon.expiration.trim() !== "" && (
-                    <span className="admin-coupon-expiration">
-                      Utløper: {formatDate(coupon.expiration)}
-                    </span>
-                  )}
-                <div>
-                  <span style={{ color: "#b89c2c", fontWeight: 600 }}>
-                    Brukt av: {couponsUsedMap[coupon.id] || 0} personer
-                  </span>
-                </div>
+                <span className="admin-coupon-expiration">
+                  {coupon.unlimited || coupon.expiration === null
+                    ? "Ingen utløpsdato"
+                    : coupon.expiration && coupon.expiration.trim() !== ""
+                    ? `Utløper: ${formatDate(coupon.expiration)}`
+                    : ""}
+                </span>
               </div>
             </div>
           ))}
@@ -247,7 +260,11 @@ function AdminCoupons() {
               <div className="coupon-modal-title">{modalCoupon.title}</div>
               <div className="coupon-modal-description">{modalCoupon.description}</div>
               <div className="coupon-modal-expiration">
-                Utløper: {formatDate(modalCoupon.expiration)}
+                {modalCoupon.unlimited || modalCoupon.expiration === null
+                  ? "Ingen utløpsdato"
+                  : modalCoupon.expiration && modalCoupon.expiration.trim() !== ""
+                  ? `Utløper: ${formatDate(modalCoupon.expiration)}`
+                  : ""}
               </div>
               {timerActive && (
                 <div style={{ color: "#b89c2c", fontWeight: 600, marginBottom: 10 }}>

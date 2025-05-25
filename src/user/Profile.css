@@ -1,7 +1,7 @@
 .profile-container {
   max-width: calc(100% - 20px);
-  background: #fff;
-  border-radius: 25px;
+  background: white;
+  border-radius: 25px !important;
   text-align: center;
   margin: 10px;
   padding: 20px;
@@ -12,7 +12,7 @@
 .profile-container h2 {
   margin-bottom: 20px;
   font-weight: 700;
-  color: #a200ff;
+  color: #212121;
   font-size: 28px;
   margin-top: 0px;
 
@@ -20,7 +20,8 @@
 
 .profile-container p {
   font-size: 16px;
-  margin: 10px;
+  margin: 0px;
+  color: #212121;
 }
 
 

@@ -67,8 +67,8 @@ const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:3000";
       buyerName: buyerName.trim(),
       email: email.trim(),
       reference: reference, // pass this unique reference
-      returnUrl: `${baseUrl}/PaymentReturn`,
-//returnUrl: "http://localhost:3000/PaymentReturn",
+     returnUrl: `${baseUrl}/PaymentReturn`,
+ //returnUrl: "http://localhost:3000/PaymentReturn",
       paymentDescription: `Betaling for ${cartItems.length} varer`,
     };
 

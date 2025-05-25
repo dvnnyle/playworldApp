@@ -10,6 +10,8 @@
   color: #ffffff;
   border-bottom: 2px solid #ddd;
   padding-bottom: 6px;
+    animation: couponFadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+
 }
 
 .products-list {
@@ -204,7 +206,7 @@ body.products-page-body {
 
 @media (max-width: 900px) {
   .products-wrapper {
-    margin-bottom: 85px;
+    margin-bottom: 110px;
   }
 }
 @media (min-width: 901px) {

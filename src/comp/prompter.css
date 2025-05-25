@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+.prompter-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.8);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prompter-modal {
+  background: #fff;
+  border-radius: 25px;
+  padding: 32px 28px 24px 28px;
+  text-align: center;
+  position: relative;
+  width: calc(100vw - 20px);
+  max-width: 500px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.prompter-title {
+  margin: 0 0 12px 0;
+  color: #212121;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.prompter-desc {
+  color: #444;
+  margin-bottom: 24px;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.prompter-btn-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.prompter-install-btn {
+  background: #212121;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 28px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.prompter-cancel-btn {
+  background: #eee;
+  color: #212121;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 22px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif !important;
+}

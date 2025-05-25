@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start": "node server.jsx",
-  "build": "react-scripts build && node --max-old-space-size=2048 obfuscate-build.js"
+    "build": "react-scripts build && node obfuscate-build.js"
   },
   "eslintConfig": {
     "extends": [
