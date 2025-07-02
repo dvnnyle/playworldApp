@@ -65,6 +65,7 @@ app.post('/create-payment', async (req, res) => {
       returnUrl,
       userFlow: 'WEB_REDIRECT',
       paymentDescription,
+      autocapture: true, // Enable autocapture so payment is captured automatically
     };
 
     const idempotencyKey = `order-${Date.now()}`;
@@ -126,7 +127,7 @@ app.post('/capture-payment', async (req, res) => {
     const capturePayload = {
       modificationAmount: { currency: 'NOK', value: amountValue }
     };
-    const url = `https://apitest.vipps.no/epayment/v1/payments/${reference}/capture`;
+    const url = `https://api.vipps.no/epayment/v1/payments/${reference}/capture`;
     const response = await axios.post(
       url,
       capturePayload,
@@ -159,7 +160,7 @@ app.post('/refund-payment', async (req, res) => {
     const refundPayload = {
       modificationAmount: { currency: 'NOK', value: amountValue }
     };
-    const url = `https://apitest.vipps.no/epayment/v1/payments/${reference}/refund`;
+    const url = `https://api.vipps.no/epayment/v1/payments/${reference}/refund`;
     const response = await axios.post(
       url,
       refundPayload,
