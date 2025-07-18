@@ -267,7 +267,7 @@ export default function PaymentReturn() {
                 Vis mine billetter
               </button>
             </div>
-          }
+          )}
         </div>
       </div>
     </div>
