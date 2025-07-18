@@ -5,6 +5,21 @@ import { db, auth } from "../firebase";
 import { doc, collection, addDoc, getDocs } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
+async function captureVippsPayment(reference, amountValue) {
+  try {
+    const response = await fetch("/capture-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reference, amountValue }),
+    });
+    if (!response.ok) throw new Error(await response.text());
+    return await response.json();
+  } catch (err) {
+    console.error("Manual Vipps capture failed:", err);
+    return null;
+  }
+}
+
 export default function PaymentReturn() {
   const [orderReference, setOrderReference] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -145,6 +160,30 @@ export default function PaymentReturn() {
 
     return () => unsubscribe();
   }, [pspReference, vippsAggregate]);
+
+  useEffect(() => {
+    // Only try manual capture if payment is reserved and not captured
+    if (
+      vippsAggregate &&
+      vippsAggregate.capturedAmount.value === 0 &&
+      vippsAggregate.authorizedAmount.value > 0 &&
+      orderReference &&
+      totalPrice > 0
+    ) {
+      const timer = setTimeout(async () => {
+        const captureRes = await captureVippsPayment(orderReference, totalPrice * 100);
+        if (captureRes && captureRes.aggregate) {
+          setVippsAggregate(captureRes.aggregate);
+          if (captureRes.aggregate.capturedAmount.value > 0) {
+            setOrderStatus("captured");
+            localStorage.setItem("vippsAggregate", JSON.stringify(captureRes.aggregate));
+          }
+        }
+      }, 2000); // 2 seconds delay
+
+      return () => clearTimeout(timer);
+    }
+  }, [vippsAggregate, orderReference, totalPrice]);
 
   function formatDurationFromMinutes(minutes) {
     if (!minutes || minutes <= 0) return "Ukjent varighet";

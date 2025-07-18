@@ -142,10 +142,8 @@ app.post('/capture-payment', async (req, res) => {
         },
       }
     );
-    console.log('Vipps aggregate object:', JSON.stringify(response.data.aggregate, null, 2));
     res.json(response.data);
   } catch (error) {
-    console.error('Error capturing Vipps payment:', error.response?.data || error.message);
     res.status(500).json({
       error: 'Failed to capture Vipps payment',
       details: error.response?.data || error.message,
