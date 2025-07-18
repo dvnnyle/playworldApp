@@ -4,7 +4,6 @@ import "./PaymentReturn.css";
 import { db, auth } from "../firebase";
 import { doc, collection, addDoc, getDocs } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { captureVippsPayment } from "../vipps/vipps";
 
 export default function PaymentReturn() {
   const [orderReference, setOrderReference] = useState("");
@@ -15,6 +14,7 @@ export default function PaymentReturn() {
   const [products] = useState([]);
   const [pspReference, setPspReference] = useState("");
   const [vippsCaptureResponse, setVippsCaptureResponse] = useState(null);
+  const [vippsAggregate, setVippsAggregate] = useState(null);
   const navigate = useNavigate();
 
   const totalPrice = cartItems.reduce(
@@ -71,27 +71,6 @@ export default function PaymentReturn() {
       }
     }
   }, []);
-
-  // Capture Vipps payment and get pspReference
-  useEffect(() => {
-    if (orderReference && totalPrice > 0) {
-      captureVippsPayment({ reference: orderReference, amountValue: Math.round(totalPrice * 100) })
-        .then(res => {
-          console.log("Vipps capture response:", res);
-          if (res && res.aggregate) {
-            console.log("Vipps aggregate object:", res.aggregate);
-          }
-          if (res && res.pspReference) {
-            localStorage.setItem("pspReference", res.pspReference);
-            setPspReference(res.pspReference);
-          }
-          setVippsCaptureResponse(res);
-        })
-        .catch(err => {
-          console.error("Vipps capture failed:", err);
-        });
-    }
-  }, [orderReference, totalPrice]);
 
   // Save order to Firestore after pspReference is set
   useEffect(() => {
@@ -152,6 +131,13 @@ export default function PaymentReturn() {
 
     return () => unsubscribe();
   }, [pspReference, vippsCaptureResponse]);
+
+  useEffect(() => {
+    const storedAggregate = localStorage.getItem("vippsAggregate");
+    if (storedAggregate) {
+      setVippsAggregate(JSON.parse(storedAggregate));
+    }
+  }, []);
 
   function formatDurationFromMinutes(minutes) {
     if (!minutes || minutes <= 0) return "Ukjent varighet";
@@ -225,36 +211,36 @@ export default function PaymentReturn() {
           </p>
 
           {/* Show Vipps aggregate capture info if available */}
-          {vippsCaptureResponse?.aggregate && (
+          {vippsAggregate && (
             <div className="vipps-aggregate-box" style={{ marginTop: 24 }}>
               <h3>Vipps Betalingsstatus:</h3>
               <ul>
                 <li>
                   <strong>Autorisert beløp:</strong>{" "}
-                  {vippsCaptureResponse.aggregate.authorizedAmount.value / 100}{" "}
-                  {vippsCaptureResponse.aggregate.authorizedAmount.currency}
+                  {vippsAggregate.authorizedAmount.value / 100}{" "}
+                  {vippsAggregate.authorizedAmount.currency}
                 </li>
                 <li>
                   <strong>Kansellert beløp:</strong>{" "}
-                  {vippsCaptureResponse.aggregate.cancelledAmount.value / 100}{" "}
-                  {vippsCaptureResponse.aggregate.cancelledAmount.currency}
+                  {vippsAggregate.cancelledAmount.value / 100}{" "}
+                  {vippsAggregate.cancelledAmount.currency}
                 </li>
                 <li>
                   <strong>Fanget beløp:</strong>{" "}
-                  {vippsCaptureResponse.aggregate.capturedAmount.value / 100}{" "}
-                  {vippsCaptureResponse.aggregate.capturedAmount.currency}
+                  {vippsAggregate.capturedAmount.value / 100}{" "}
+                  {vippsAggregate.capturedAmount.currency}
                   <h3>
-                    {vippsCaptureResponse.aggregate.capturedAmount.value > 0
+                    {vippsAggregate.capturedAmount.value > 0
                       ? "Fanget: Godkjent"
-                      : vippsCaptureResponse.aggregate.authorizedAmount.value > 0
+                      : vippsAggregate.authorizedAmount.value > 0
                       ? "Reservert: Ikke fanget enda"
                       : "Ikke godkjent"}
                   </h3>
                 </li>
                 <li>
                   <strong>Refundert beløp:</strong>{" "}
-                  {vippsCaptureResponse.aggregate.refundedAmount.value / 100}{" "}
-                  {vippsCaptureResponse.aggregate.refundedAmount.currency}
+                  {vippsAggregate.refundedAmount.value / 100}{" "}
+                  {vippsAggregate.refundedAmount.currency}
                 </li>
               </ul>
             </div>
@@ -281,7 +267,7 @@ export default function PaymentReturn() {
                 Vis mine billetter
               </button>
             </div>
-          )}
+          }
         </div>
       </div>
     </div>

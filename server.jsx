@@ -65,7 +65,7 @@ app.post('/create-payment', async (req, res) => {
       returnUrl,
       userFlow: 'WEB_REDIRECT',
       paymentDescription,
-      autocapture: true, // Enable autocapture so payment is captured automatically
+      autocapture: true, // <-- THIS IS REQUIRED FOR INSTANT CAPTURE
     };
 
     const idempotencyKey = `order-${Date.now()}`;
