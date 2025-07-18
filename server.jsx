@@ -3,17 +3,12 @@ const path = require('path');
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
-const { v4: uuidv4 } = require('uuid'); // At the top of your file
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
-
-// Enable CORS for localhost frontend (adjust in production)
 app.use(cors());
-
-// Parse JSON bodies
 app.use(express.json());
 
-// Load env variables
 const {
   VIPPS_CLIENT_ID,
   VIPPS_CLIENT_SECRET,
@@ -27,17 +22,19 @@ const {
   VIPPS_PAYMENT_URL,
 } = process.env;
 
-// Function to get Vipps access token
+// Vipps OAuth token
 async function getAccessToken() {
   try {
     const response = await axios.post(
       VIPPS_OAUTH_URL,
-      {},
+      {
+        client_id: VIPPS_CLIENT_ID,
+        client_secret: VIPPS_CLIENT_SECRET,
+        grant_type: "client_credentials"
+      },
       {
         headers: {
           'Content-Type': 'application/json',
-          client_id: VIPPS_CLIENT_ID,
-          client_secret: VIPPS_CLIENT_SECRET,
           'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY,
           'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER,
         },
@@ -50,13 +47,11 @@ async function getAccessToken() {
   }
 }
 
-// API endpoint to create payment
+// Create payment (autocapture)
 app.post('/create-payment', async (req, res) => {
   const { amountValue, phoneNumber, reference, returnUrl, paymentDescription } = req.body;
-
   try {
     const accessToken = await getAccessToken();
-
     const paymentPayload = {
       amount: { currency: 'NOK', value: amountValue },
       paymentMethod: { type: 'WALLET' },
@@ -65,11 +60,9 @@ app.post('/create-payment', async (req, res) => {
       returnUrl,
       userFlow: 'WEB_REDIRECT',
       paymentDescription,
-      autocapture: true, // <-- THIS IS REQUIRED FOR INSTANT CAPTURE
+      autocapture: true,
     };
-
     const idempotencyKey = `order-${Date.now()}`;
-
     const response = await axios.post(VIPPS_PAYMENT_URL, paymentPayload, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -84,9 +77,6 @@ app.post('/create-payment', async (req, res) => {
       },
     });
 
-    // Log the full Vipps payment response
-    console.log('Vipps payment response:', JSON.stringify(response.data, null, 2));
-
     const vippsResponse = response.data;
     let vippsRedirectUrl = vippsResponse.url || vippsResponse.redirectUrl;
     const pspReference = vippsResponse.pspReference;
@@ -98,17 +88,11 @@ app.post('/create-payment', async (req, res) => {
         vippsResponse.paymentToken ||
         vippsResponse.data?.token ||
         null;
-
       if (!token) {
-        console.warn('Vipps payment token or redirect URL not found in response');
         return res.status(500).json({ error: 'Vipps payment token not found' });
       }
-
       vippsRedirectUrl = `https://api.vipps.no/dwo-api-application/v1/deeplink/vippsgateway?v=2&token=${token}`;
     }
-
-    // Log the actual Vipps redirect URL to the terminal
-    console.log('Vipps redirect URL:', vippsRedirectUrl);
 
     return res.json({ url: vippsRedirectUrl, reference, pspReference, aggregate });
   } catch (error) {
@@ -120,7 +104,7 @@ app.post('/create-payment', async (req, res) => {
   }
 });
 
-// Capture payment endpoint for Vipps ePayment API (test)
+// Manual capture endpoint
 app.post('/capture-payment', async (req, res) => {
   const { reference, amountValue } = req.body;
   try {
@@ -151,7 +135,7 @@ app.post('/capture-payment', async (req, res) => {
   }
 });
 
-// Refund payment endpoint for Vipps ePayment API
+// Refund endpoint
 app.post('/refund-payment', async (req, res) => {
   const { reference, amountValue } = req.body;
   try {
@@ -173,13 +157,8 @@ app.post('/refund-payment', async (req, res) => {
         },
       }
     );
-    // Log amount in øre and NOK
-    console.log(
-      `Vipps payment refunded for reference: ${reference}, amount: ${amountValue} øre, conversion: ${(amountValue / 100).toFixed(2)} NOK`
-    );
     res.json(response.data);
   } catch (error) {
-    console.error('Error refunding Vipps payment:', error.response?.data || error.message);
     res.status(500).json({
       error: 'Failed to refund Vipps payment',
       details: error.response?.data || error.message,
@@ -187,13 +166,55 @@ app.post('/refund-payment', async (req, res) => {
   }
 });
 
+// Example order status updater (replace with your DB logic)
+async function updateOrderStatus(reference, status) {
+  // TODO: Replace this with your actual database update logic
+  // For demonstration, we'll just log the update:
+  console.log(`Order ${reference} status updated to ${status}`);
+}
+
+// Webhook endpoint for Vipps events
+app.post('/vipps-webhook', async (req, res) => {
+  const event = req.body;
+  const reference = event.data?.reference;
+
+  switch (event.type) {
+    case 'epayments.payment.created.v1':
+      await updateOrderStatus(reference, "created");
+      break;
+    case 'epayments.payment.aborted.v1':
+      await updateOrderStatus(reference, "aborted");
+      break;
+    case 'epayments.payment.expired.v1':
+      await updateOrderStatus(reference, "expired");
+      break;
+    case 'epayments.payment.cancelled.v1':
+      await updateOrderStatus(reference, "cancelled");
+      break;
+    case 'epayments.payment.captured.v1':
+      await updateOrderStatus(reference, "captured");
+      break;
+    case 'epayments.payment.refunded.v1':
+      await updateOrderStatus(reference, "refunded");
+      break;
+    case 'epayments.payment.authorized.v1':
+      await updateOrderStatus(reference, "authorized");
+      break;
+    case 'epayments.payment.terminated.v1':
+      await updateOrderStatus(reference, "terminated");
+      break;
+    default:
+      console.log(`Unhandled Vipps event type: ${event.type}`);
+  }
+
+  res.status(200).send('Webhook received');
+});
+
 // Serve static React build files
 app.use(express.static(path.resolve(__dirname, 'build')));
-
 app.get('/*path', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'build', 'index.html'), (err) => {
     if (err) {
-      console.error(err);
       res.status(500).send(err);
     }
   });
