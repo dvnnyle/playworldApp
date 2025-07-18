@@ -103,7 +103,7 @@ app.post('/create-payment', async (req, res) => {
         return res.status(500).json({ error: 'Vipps payment token not found' });
       }
 
-      vippsRedirectUrl = `https://apitest.vipps.no/dwo-api-application/v1/deeplink/vippsgateway?v=2&token=${token}`;
+      vippsRedirectUrl = `https://api.vipps.no/dwo-api-application/v1/deeplink/vippsgateway?v=2&token=${token}`;
     }
 
     // Log the actual Vipps redirect URL to the terminal
@@ -127,7 +127,7 @@ app.post('/capture-payment', async (req, res) => {
     const capturePayload = {
       modificationAmount: { currency: 'NOK', value: amountValue }
     };
-    const url = `https://apitest.vipps.no/epayment/v1/payments/${reference}/capture`;
+    const url = `https://api.vipps.no/epayment/v1/payments/${reference}/capture`;
     const response = await axios.post(
       url,
       capturePayload,
@@ -160,7 +160,7 @@ app.post('/refund-payment', async (req, res) => {
     const refundPayload = {
       modificationAmount: { currency: 'NOK', value: amountValue }
     };
-    const url = `https://apitest.vipps.no/epayment/v1/payments/${reference}/refund`;
+    const url = `https://api.vipps.no/epayment/v1/payments/${reference}/refund`;
     const response = await axios.post(
       url,
       refundPayload,
