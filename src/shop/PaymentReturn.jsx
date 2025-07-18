@@ -78,6 +78,9 @@ export default function PaymentReturn() {
       captureVippsPayment({ reference: orderReference, amountValue: Math.round(totalPrice * 100) })
         .then(res => {
           console.log("Vipps capture response:", res);
+          if (res && res.aggregate) {
+            console.log("Vipps aggregate object:", res.aggregate);
+          }
           if (res && res.pspReference) {
             localStorage.setItem("pspReference", res.pspReference);
             setPspReference(res.pspReference);
@@ -220,6 +223,42 @@ export default function PaymentReturn() {
           <p>
             <strong>Total:</strong> {totalPrice} kr
           </p>
+
+          {/* Show Vipps aggregate capture info if available */}
+          {vippsCaptureResponse?.aggregate && (
+            <div className="vipps-aggregate-box" style={{ marginTop: 24 }}>
+              <h3>Vipps Betalingsstatus:</h3>
+              <ul>
+                <li>
+                  <strong>Autorisert beløp:</strong>{" "}
+                  {vippsCaptureResponse.aggregate.authorizedAmount.value / 100}{" "}
+                  {vippsCaptureResponse.aggregate.authorizedAmount.currency}
+                </li>
+                <li>
+                  <strong>Kansellert beløp:</strong>{" "}
+                  {vippsCaptureResponse.aggregate.cancelledAmount.value / 100}{" "}
+                  {vippsCaptureResponse.aggregate.cancelledAmount.currency}
+                </li>
+                <li>
+                  <strong>Fanget beløp:</strong>{" "}
+                  {vippsCaptureResponse.aggregate.capturedAmount.value / 100}{" "}
+                  {vippsCaptureResponse.aggregate.capturedAmount.currency}
+                  <h3>
+                    {vippsCaptureResponse.aggregate.capturedAmount.value > 0
+                      ? "Fanget: Godkjent"
+                      : vippsCaptureResponse.aggregate.authorizedAmount.value > 0
+                      ? "Reservert: Ikke fanget enda"
+                      : "Ikke godkjent"}
+                  </h3>
+                </li>
+                <li>
+                  <strong>Refundert beløp:</strong>{" "}
+                  {vippsCaptureResponse.aggregate.refundedAmount.value / 100}{" "}
+                  {vippsCaptureResponse.aggregate.refundedAmount.currency}
+                </li>
+              </ul>
+            </div>
+          )}
 
           {tickets.length > 0 && (
             <div className="ticket-box" style={{ marginTop: 24 }}>

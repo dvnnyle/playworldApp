@@ -68,9 +68,10 @@ const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:3000";
       email: email.trim(),
       reference: reference, // pass this unique reference
      returnUrl: `${baseUrl}/PaymentReturn`,
- //returnUrl: "http://localhost:3000/PaymentReturn",
+      //returnUrl: "http://localhost:3000/PaymentReturn",
       paymentDescription: `Betaling for ${cartItems.length} varer`,
     };
+
 
     try {
       const vippsResponse = await createVippsPayment(paymentData);

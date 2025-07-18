@@ -127,7 +127,7 @@ app.post('/capture-payment', async (req, res) => {
     const capturePayload = {
       modificationAmount: { currency: 'NOK', value: amountValue }
     };
-    const url = `https://api.vipps.no/epayment/v1/payments/${reference}/capture`;
+    const url = `https://apitest.vipps.no/epayment/v1/payments/${reference}/capture`;
     const response = await axios.post(
       url,
       capturePayload,
@@ -137,11 +137,11 @@ app.post('/capture-payment', async (req, res) => {
           'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY,
           'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER,
           'Content-Type': 'application/json',
-          'Idempotency-Key': uuidv4(), // Add this header
+          'Idempotency-Key': uuidv4(),
         },
       }
     );
-    console.log(`Vipps payment captured for reference: ${reference}, amount: ${amountValue} NOK`);
+    console.log('Vipps aggregate object:', JSON.stringify(response.data.aggregate, null, 2));
     res.json(response.data);
   } catch (error) {
     console.error('Error capturing Vipps payment:', error.response?.data || error.message);
@@ -160,7 +160,7 @@ app.post('/refund-payment', async (req, res) => {
     const refundPayload = {
       modificationAmount: { currency: 'NOK', value: amountValue }
     };
-    const url = `https://api.vipps.no/epayment/v1/payments/${reference}/refund`;
+    const url = `https://apitest.vipps.no/epayment/v1/payments/${reference}/refund`;
     const response = await axios.post(
       url,
       refundPayload,
