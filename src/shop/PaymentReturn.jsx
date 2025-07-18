@@ -13,8 +13,8 @@ export default function PaymentReturn() {
   const [cartItems, setCartItems] = useState([]);
   const [products] = useState([]);
   const [pspReference, setPspReference] = useState("");
-  const [vippsCaptureResponse, setVippsCaptureResponse] = useState(null);
   const [vippsAggregate, setVippsAggregate] = useState(null);
+  const [orderStatus, setOrderStatus] = useState("payment_in_progress");
   const navigate = useNavigate();
 
   const totalPrice = cartItems.reduce(
@@ -29,6 +29,7 @@ export default function PaymentReturn() {
     const storedName = localStorage.getItem("buyerName");
     const storedEmail = localStorage.getItem("email");
     const storedCart = localStorage.getItem("cartItems");
+    const storedAggregate = localStorage.getItem("vippsAggregate");
 
     if (storedReference) setOrderReference(storedReference);
     if (storedPhone) setPhoneNumber(storedPhone);
@@ -70,6 +71,19 @@ export default function PaymentReturn() {
         localStorage.setItem("orders", JSON.stringify([newOrder, ...storedOrders]));
       }
     }
+
+    // Load aggregate and set order status
+    if (storedAggregate) {
+      const agg = JSON.parse(storedAggregate);
+      setVippsAggregate(agg);
+      if (agg.capturedAmount?.value > 0) {
+        setOrderStatus("captured");
+      } else if (agg.authorizedAmount?.value > 0) {
+        setOrderStatus("reserved");
+      } else {
+        setOrderStatus("payment_in_progress");
+      }
+    }
   }, []);
 
   // Save order to Firestore after pspReference is set
@@ -105,7 +119,7 @@ export default function PaymentReturn() {
             0
           ),
           pspReference: storedPspReference || "",
-          vippsCaptureResponse: vippsCaptureResponse || null,
+          vippsAggregate: vippsAggregate || null,
         };
 
         try {
@@ -130,14 +144,7 @@ export default function PaymentReturn() {
     });
 
     return () => unsubscribe();
-  }, [pspReference, vippsCaptureResponse]);
-
-  useEffect(() => {
-    const storedAggregate = localStorage.getItem("vippsAggregate");
-    if (storedAggregate) {
-      setVippsAggregate(JSON.parse(storedAggregate));
-    }
-  }, []);
+  }, [pspReference, vippsAggregate]);
 
   function formatDurationFromMinutes(minutes) {
     if (!minutes || minutes <= 0) return "Ukjent varighet";
@@ -211,7 +218,7 @@ export default function PaymentReturn() {
           </p>
 
           {/* Show Vipps aggregate capture info if available */}
-          {vippsAggregate && (
+          {vippsAggregate ? (
             <div className="vipps-aggregate-box" style={{ marginTop: 24 }}>
               <h3>Vipps Betalingsstatus:</h3>
               <ul>
@@ -243,6 +250,13 @@ export default function PaymentReturn() {
                   {vippsAggregate.refundedAmount.currency}
                 </li>
               </ul>
+            </div>
+          ) : (
+            <div className="vipps-aggregate-box" style={{ marginTop: 24 }}>
+              <h3>Betaling pågår...</h3>
+              <p>
+                Vennligst vent, betalingen behandles. Du kan lukke denne siden og komme tilbake senere for å se status.
+              </p>
             </div>
           )}
 
