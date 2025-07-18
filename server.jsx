@@ -84,12 +84,13 @@ app.post('/create-payment', async (req, res) => {
       },
     });
 
-    // Log the full Vipps payment response (no masking)
+    // Log the full Vipps payment response
     console.log('Vipps payment response:', JSON.stringify(response.data, null, 2));
 
     const vippsResponse = response.data;
     let vippsRedirectUrl = vippsResponse.url || vippsResponse.redirectUrl;
     const pspReference = vippsResponse.pspReference;
+    const aggregate = vippsResponse.aggregate || null;
 
     if (!vippsRedirectUrl) {
       const token =
@@ -109,7 +110,7 @@ app.post('/create-payment', async (req, res) => {
     // Log the actual Vipps redirect URL to the terminal
     console.log('Vipps redirect URL:', vippsRedirectUrl);
 
-    return res.json({ url: vippsRedirectUrl, reference, pspReference });
+    return res.json({ url: vippsRedirectUrl, reference, pspReference, aggregate });
   } catch (error) {
     console.error('Error creating Vipps payment:', error.response?.data || error.message);
     return res.status(500).json({

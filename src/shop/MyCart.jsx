@@ -81,7 +81,9 @@ const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:3000";
         localStorage.setItem("phoneNumber", fullPhoneNumber);
         localStorage.setItem("buyerName", buyerName.trim());
         localStorage.setItem("email", email.trim());
-
+        if (vippsResponse.aggregate) {
+          localStorage.setItem("vippsAggregate", JSON.stringify(vippsResponse.aggregate));
+        }
         // Redirect to Vipps payment page
         window.location.href = vippsResponse.url;
       } else {
