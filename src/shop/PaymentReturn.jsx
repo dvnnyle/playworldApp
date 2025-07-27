@@ -4,21 +4,7 @@ import "./PaymentReturn.css";
 import { db, auth } from "../firebase";
 import { doc, collection, addDoc, getDocs } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-
-async function captureVippsPayment(reference, amountValue) {
-  try {
-    const response = await fetch("/capture-payment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reference, amountValue }),
-    });
-    if (!response.ok) throw new Error(await response.text());
-    return await response.json();
-  } catch (err) {
-    console.error("Manual Vipps capture failed:", err);
-    return null;
-  }
-}
+import { captureVippsPayment } from "../vipps/vipps";
 
 export default function PaymentReturn() {
   const [orderReference, setOrderReference] = useState("");
@@ -28,8 +14,7 @@ export default function PaymentReturn() {
   const [cartItems, setCartItems] = useState([]);
   const [products] = useState([]);
   const [pspReference, setPspReference] = useState("");
-  const [vippsAggregate, setVippsAggregate] = useState(null);
-  const [orderStatus, setOrderStatus] = useState("payment_in_progress");
+  const [vippsCaptureResponse, setVippsCaptureResponse] = useState(null);
   const navigate = useNavigate();
 
   const totalPrice = cartItems.reduce(
@@ -44,7 +29,6 @@ export default function PaymentReturn() {
     const storedName = localStorage.getItem("buyerName");
     const storedEmail = localStorage.getItem("email");
     const storedCart = localStorage.getItem("cartItems");
-    const storedAggregate = localStorage.getItem("vippsAggregate");
 
     if (storedReference) setOrderReference(storedReference);
     if (storedPhone) setPhoneNumber(storedPhone);
@@ -86,20 +70,16 @@ export default function PaymentReturn() {
         localStorage.setItem("orders", JSON.stringify([newOrder, ...storedOrders]));
       }
     }
-
-    // Load aggregate and set order status
-    if (storedAggregate) {
-      const agg = JSON.parse(storedAggregate);
-      setVippsAggregate(agg);
-      if (agg.capturedAmount?.value > 0) {
-        setOrderStatus("captured");
-      } else if (agg.authorizedAmount?.value > 0) {
-        setOrderStatus("reserved");
-      } else {
-        setOrderStatus("payment_in_progress");
-      }
-    }
   }, []);
+
+  // Note: Auto-capture removed - payments must be manually captured in admin panel
+  useEffect(() => {
+    if (orderReference) {
+      // Set a placeholder pspReference so the order can be saved
+      // The actual pspReference will be updated when payment is manually captured
+      setPspReference(orderReference);
+    }
+  }, [orderReference]);
 
   // Save order to Firestore after pspReference is set
   useEffect(() => {
@@ -134,7 +114,8 @@ export default function PaymentReturn() {
             0
           ),
           pspReference: storedPspReference || "",
-          vippsAggregate: vippsAggregate || null,
+          vippsCaptureResponse: null, // Will be updated when manually captured
+          captureStatus: "PENDING", // Track capture status
         };
 
         try {
@@ -159,31 +140,7 @@ export default function PaymentReturn() {
     });
 
     return () => unsubscribe();
-  }, [pspReference, vippsAggregate]);
-
-  useEffect(() => {
-    // Only try manual capture if payment is reserved and not captured
-    if (
-      vippsAggregate &&
-      vippsAggregate.capturedAmount.value === 0 &&
-      vippsAggregate.authorizedAmount.value > 0 &&
-      orderReference &&
-      totalPrice > 0
-    ) {
-      const timer = setTimeout(async () => {
-        const captureRes = await captureVippsPayment(orderReference, totalPrice * 100);
-        if (captureRes && captureRes.aggregate) {
-          setVippsAggregate(captureRes.aggregate);
-          if (captureRes.aggregate.capturedAmount.value > 0) {
-            setOrderStatus("captured");
-            localStorage.setItem("vippsAggregate", JSON.stringify(captureRes.aggregate));
-          }
-        }
-      }, 2000); // 2 seconds delay
-
-      return () => clearTimeout(timer);
-    }
-  }, [vippsAggregate, orderReference, totalPrice]);
+  }, [pspReference]);
 
   function formatDurationFromMinutes(minutes) {
     if (!minutes || minutes <= 0) return "Ukjent varighet";
@@ -255,49 +212,6 @@ export default function PaymentReturn() {
           <p>
             <strong>Total:</strong> {totalPrice} kr
           </p>
-
-          {/* Show Vipps aggregate capture info if available */}
-          {vippsAggregate ? (
-            <div className="vipps-aggregate-box" style={{ marginTop: 24 }}>
-              <h3>Vipps Betalingsstatus:</h3>
-              <ul>
-                <li>
-                  <strong>Autorisert beløp:</strong>{" "}
-                  {vippsAggregate.authorizedAmount.value / 100}{" "}
-                  {vippsAggregate.authorizedAmount.currency}
-                </li>
-                <li>
-                  <strong>Kansellert beløp:</strong>{" "}
-                  {vippsAggregate.cancelledAmount.value / 100}{" "}
-                  {vippsAggregate.cancelledAmount.currency}
-                </li>
-                <li>
-                  <strong>Fanget beløp:</strong>{" "}
-                  {vippsAggregate.capturedAmount.value / 100}{" "}
-                  {vippsAggregate.capturedAmount.currency}
-                  <h3>
-                    {vippsAggregate.capturedAmount.value > 0
-                      ? "Fanget: Godkjent"
-                      : vippsAggregate.authorizedAmount.value > 0
-                      ? "Reservert: Ikke fanget enda"
-                      : "Ikke godkjent"}
-                  </h3>
-                </li>
-                <li>
-                  <strong>Refundert beløp:</strong>{" "}
-                  {vippsAggregate.refundedAmount.value / 100}{" "}
-                  {vippsAggregate.refundedAmount.currency}
-                </li>
-              </ul>
-            </div>
-          ) : (
-            <div className="vipps-aggregate-box" style={{ marginTop: 24 }}>
-              <h3>Betaling pågår...</h3>
-              <p>
-                Vennligst vent, betalingen behandles. Du kan lukke denne siden og komme tilbake senere for å se status.
-              </p>
-            </div>
-          )}
 
           {tickets.length > 0 && (
             <div className="ticket-box" style={{ marginTop: 24 }}>

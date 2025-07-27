@@ -26,6 +26,7 @@ import Admin from "./console/admin";
 import CustomerOrderList from "./console/CustomerOrderList";
 import AdminCoupons from "./console/adminCoupons"; // Add this import
 import AdminLogin from "./console/adminLogin"; // Add this import
+import OrderStatus from "./vipps/orderStatus"; // Import the OrderStatus component
 
 import PageTransition from "./comp/PageTransition";
 
@@ -220,6 +221,14 @@ function AnimatedRoutes() {
           element={
             <PageTransition>
               <AdminCoupons />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/orderstatus"
+          element={
+            <PageTransition>
+              <OrderStatus />
             </PageTransition>
           }
         />

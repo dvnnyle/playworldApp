@@ -67,11 +67,10 @@ const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:3000";
       buyerName: buyerName.trim(),
       email: email.trim(),
       reference: reference, // pass this unique reference
-     returnUrl: `${baseUrl}/PaymentReturn`,
-      //returnUrl: "http://localhost:3000/PaymentReturn",
+      returnUrl: `${baseUrl}/PaymentReturn`,
+//returnUrl: "http://localhost:3000/PaymentReturn",
       paymentDescription: `Betaling for ${cartItems.length} varer`,
     };
-
 
     try {
       const vippsResponse = await createVippsPayment(paymentData);
@@ -81,9 +80,7 @@ const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:3000";
         localStorage.setItem("phoneNumber", fullPhoneNumber);
         localStorage.setItem("buyerName", buyerName.trim());
         localStorage.setItem("email", email.trim());
-        if (vippsResponse.aggregate) {
-          localStorage.setItem("vippsAggregate", JSON.stringify(vippsResponse.aggregate));
-        }
+
         // Redirect to Vipps payment page
         window.location.href = vippsResponse.url;
       } else {
